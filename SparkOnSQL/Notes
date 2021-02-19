@@ -1,0 +1,5 @@
+Docker pull command:
+    docker pull mcr.microsoft.com/mssql/server:vNext-CTP2.0-ubuntu
+
+Docker run command:
+    docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=yourStrong(!)Password" -p 1433:1433 -d mcr.microsoft.com/mssql/server:vNext-CTP2.0-ubuntu

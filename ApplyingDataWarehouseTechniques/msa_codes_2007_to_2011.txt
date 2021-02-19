@@ -1,0 +1,943 @@
+2007-2011 Statistics of U.S. Businesses comma-delimited files
+
+MSA
+CODE	MSA DESCRIPTION  (#939)
+10020   Abbeville, LA Micropolitan Statistical Area
+10100   Aberdeen, SD Micropolitan Statistical Area
+10140   Aberdeen, WA Micropolitan Statistical Area
+10180   Abilene, TX Metropolitan Statistical Area
+10220   Ada, OK Micropolitan Statistical Area
+10300   Adrian, MI Micropolitan Statistical Area
+10420   Akron, OH Metropolitan Statistical Area
+10460   Alamogordo, NM Micropolitan Statistical Area
+10500   Albany, GA Metropolitan Statistical Area
+10540   Albany-Lebanon, OR Micropolitan Statistical Area
+10580   Albany-Schenectady-Troy, NY Metropolitan Statistical Area
+10620   Albemarle, NC Micropolitan Statistical Area
+10660   Albert Lea, MN Micropolitan Statistical Area
+10700   Albertville, AL Micropolitan Statistical Area
+10740   Albuquerque, NM Metropolitan Statistical Area
+10760   Alexander City, AL Micropolitan Statistical Area
+10780   Alexandria, LA Metropolitan Statistical Area
+10820   Alexandria, MN Micropolitan Statistical Area
+10860   Alice, TX Micropolitan Statistical Area
+10880   Allegan, MI Micropolitan Statistical Area
+10900   Allentown-Bethlehem-Easton, PA-NJ Metropolitan Statistical Area
+10940   Alma, MI Micropolitan Statistical Area
+10980   Alpena, MI Micropolitan Statistical Area
+11020   Altoona, PA Metropolitan Statistical Area
+11060   Altus, OK Micropolitan Statistical Area
+11100   Amarillo, TX Metropolitan Statistical Area
+11140   Americus, GA Micropolitan Statistical Area
+11180   Ames, IA Metropolitan Statistical Area
+11220   Amsterdam, NY Micropolitan Statistical Area
+11260   Anchorage, AK Metropolitan Statistical Area
+11300   Anderson, IN Metropolitan Statistical Area
+11340   Anderson, SC Metropolitan Statistical Area
+11380   Andrews, TX Micropolitan Statistical Area
+11420   Angola, IN Micropolitan Statistical Area
+11460   Ann Arbor, MI Metropolitan Statistical Area
+11500   Anniston-Oxford, AL Metropolitan Statistical Area
+11540   Appleton, WI Metropolitan Statistical Area
+11580   Arcadia, FL Micropolitan Statistical Area
+11620   Ardmore, OK Micropolitan Statistical Area
+11660   Arkadelphia, AR Micropolitan Statistical Area
+11700   Asheville, NC Metropolitan Statistical Area
+11740   Ashland, OH Micropolitan Statistical Area
+11780   Ashtabula, OH Micropolitan Statistical Area
+11820   Astoria, OR Micropolitan Statistical Area
+11860   Atchison, KS Micropolitan Statistical Area
+11900   Athens, OH Micropolitan Statistical Area
+11940   Athens, TN Micropolitan Statistical Area
+11980   Athens, TX Micropolitan Statistical Area
+12020   Athens-Clarke County, GA Metropolitan Statistical Area
+12060   Atlanta-Sandy Springs-Marietta, GA Metropolitan Statistical Area
+12100   Atlantic City, NJ Metropolitan Statistical Area
+12140   Auburn, IN Micropolitan Statistical Area
+12180   Auburn, NY Micropolitan Statistical Area
+12220   Auburn-Opelika, AL Metropolitan Statistical Area
+12260   Augusta-Richmond County, GA-SC Metropolitan Statistical Area
+12300   Augusta-Waterville, ME Micropolitan Statistical Area
+12380   Austin, MN Micropolitan Statistical Area
+12420   Austin-Round Rock, TX Metropolitan Statistical Area
+12460   Bainbridge, GA Micropolitan Statistical Area
+12540   Bakersfield, CA Metropolitan Statistical Area
+12580   Baltimore-Towson, MD Metropolitan Statistical Area
+12620   Bangor, ME Metropolitan Statistical Area
+12660   Baraboo, WI Micropolitan Statistical Area
+12700   Barnstable Town, MA Metropolitan Statistical Area
+12740   Barre, VT Micropolitan Statistical Area
+12780   Bartlesville, OK Micropolitan Statistical Area
+12820   Bastrop, LA Micropolitan Statistical Area
+12860   Batavia, NY Micropolitan Statistical Area
+12900   Batesville, AR Micropolitan Statistical Area
+12940   Baton Rouge, LA Metropolitan Statistical Area
+12980   Battle Creek, MI Metropolitan Statistical Area
+13020   Bay City, MI Metropolitan Statistical Area
+13060   Bay City, TX Micropolitan Statistical Area
+13100   Beatrice, NE Micropolitan Statistical Area
+13140   Beaumont-Port Arthur, TX Metropolitan Statistical Area
+13180   Beaver Dam, WI Micropolitan Statistical Area
+13220   Beckley, WV Micropolitan Statistical Area
+13260   Bedford, IN Micropolitan Statistical Area
+13300   Beeville, TX Micropolitan Statistical Area
+13340   Bellefontaine, OH Micropolitan Statistical Area
+13380   Bellingham, WA Metropolitan Statistical Area
+13420   Bemidji, MN Micropolitan Statistical Area
+13460   Bend, OR Metropolitan Statistical Area
+13500   Bennettsville, SC Micropolitan Statistical Area
+13540   Bennington, VT Micropolitan Statistical Area
+13620   Berlin, NH-VT Micropolitan Statistical Area
+13660   Big Rapids, MI Micropolitan Statistical Area
+13700   Big Spring, TX Micropolitan Statistical Area
+13740   Billings, MT Metropolitan Statistical Area
+13780   Binghamton, NY Metropolitan Statistical Area
+13820   Birmingham-Hoover, AL Metropolitan Statistical Area
+13860   Bishop, CA Micropolitan Statistical Area
+13900   Bismarck, ND Metropolitan Statistical Area
+13940   Blackfoot, ID Micropolitan Statistical Area
+13980   Blacksburg-Christiansburg-Radford, VA Metropolitan Statistical Area
+14020   Bloomington, IN Metropolitan Statistical Area
+14060   Bloomington-Normal, IL Metropolitan Statistical Area
+14100   Bloomsburg-Berwick, PA Micropolitan Statistical Area
+14140   Bluefield, WV-VA Micropolitan Statistical Area
+14180   Blytheville, AR Micropolitan Statistical Area
+14220   Bogalusa, LA Micropolitan Statistical Area
+14260   Boise City-Nampa, ID Metropolitan Statistical Area
+14300   Bonham, TX Micropolitan Statistical Area
+14340   Boone, IA Micropolitan Statistical Area
+14380   Boone, NC Micropolitan Statistical Area
+14420   Borger, TX Micropolitan Statistical Area
+14460   Boston-Cambridge-Quincy, MA-NH Metropolitan Statistical Area
+14500   Boulder, CO Metropolitan Statistical Area
+14540   Bowling Green, KY Metropolitan Statistical Area
+14580   Bozeman, MT Micropolitan Statistical Area
+14620   Bradford, PA Micropolitan Statistical Area
+14660   Brainerd, MN Micropolitan Statistical Area
+14700   Branson, MO Micropolitan Statistical Area
+14740   Bremerton-Silverdale, WA Metropolitan Statistical Area
+14780   Brenham, TX Micropolitan Statistical Area
+14820   Brevard, NC Micropolitan Statistical Area
+14860   Bridgeport-Stamford-Norwalk, CT Metropolitan Statistical Area
+14940   Brigham City, UT Micropolitan Statistical Area
+15020   Brookhaven, MS Micropolitan Statistical Area
+15060   Brookings, OR Micropolitan Statistical Area
+15100   Brookings, SD Micropolitan Statistical Area
+15140   Brownsville, TN Micropolitan Statistical Area
+15180   Brownsville-Harlingen, TX Metropolitan Statistical Area
+15220   Brownwood, TX Micropolitan Statistical Area
+15260   Brunswick, GA Metropolitan Statistical Area
+15340   Bucyrus, OH Micropolitan Statistical Area
+15380   Buffalo-Niagara Falls, NY Metropolitan Statistical Area
+15420   Burley, ID Micropolitan Statistical Area
+15460   Burlington, IA-IL Micropolitan Statistical Area
+15500   Burlington, NC Metropolitan Statistical Area
+15540   Burlington-South Burlington, VT Metropolitan Statistical Area
+15580   Butte-Silver Bow, MT Micropolitan Statistical Area
+15620   Cadillac, MI Micropolitan Statistical Area
+15660   Calhoun, GA Micropolitan Statistical Area
+15700   Cambridge, MD Micropolitan Statistical Area
+15740   Cambridge, OH Micropolitan Statistical Area
+15780   Camden, AR Micropolitan Statistical Area
+15820   Campbellsville, KY Micropolitan Statistical Area
+15860   Canon City, CO Micropolitan Statistical Area
+15900   Canton, IL Micropolitan Statistical Area
+15940   Canton-Massillon, OH Metropolitan Statistical Area
+15980   Cape Coral-Fort Myers, FL Metropolitan Statistical Area
+16020   Cape Girardeau-Jackson, MO-IL Micropolitan Statistical Area
+16060   Carbondale, IL Micropolitan Statistical Area
+16100   Carlsbad-Artesia, NM Micropolitan Statistical Area
+16180   Carson City, NV Metropolitan Statistical Area
+16220   Casper, WY Metropolitan Statistical Area
+16260   Cedar City, UT Micropolitan Statistical Area
+16300   Cedar Rapids, IA Metropolitan Statistical Area
+16340   Cedartown, GA Micropolitan Statistical Area
+16380   Celina, OH Micropolitan Statistical Area
+16420   Central City, KY Micropolitan Statistical Area
+16460   Centralia, IL Micropolitan Statistical Area
+16500   Centralia, WA Micropolitan Statistical Area
+16540   Chambersburg, PA Micropolitan Statistical Area
+16580   Champaign-Urbana, IL Metropolitan Statistical Area
+16620   Charleston, WV Metropolitan Statistical Area
+16660   Charleston-Mattoon, IL Micropolitan Statistical Area
+16700   Charleston-North Charleston, SC Metropolitan Statistical Area
+16740   Charlotte-Gastonia-Concord, NC-SC Metropolitan Statistical Area
+16820   Charlottesville, VA Metropolitan Statistical Area
+16860   Chattanooga, TN-GA Metropolitan Statistical Area
+16900   Chester, SC Micropolitan Statistical Area
+16940   Cheyenne, WY Metropolitan Statistical Area
+16980   Chicago-Naperville-Joliet, IL-IN-WI Metropolitan Statistical Area
+17020   Chico, CA Metropolitan Statistical Area
+17060   Chillicothe, OH Micropolitan Statistical Area
+17140   Cincinnati-Middletown, OH-KY-IN Metropolitan Statistical Area
+17180   City of The Dalles, OR Micropolitan Statistical Area
+17200   Claremont, NH Micropolitan Statistical Area
+17220   Clarksburg, WV Micropolitan Statistical Area
+17260   Clarksdale, MS Micropolitan Statistical Area
+17300   Clarksville, TN-KY Metropolitan Statistical Area
+17340   Clearlake, CA Micropolitan Statistical Area
+17380   Cleveland, MS Micropolitan Statistical Area
+17420   Cleveland, TN Metropolitan Statistical Area
+17460   Cleveland-Elyria-Mentor, OH Metropolitan Statistical Area
+17500   Clewiston, FL Micropolitan Statistical Area
+17540   Clinton, IA Micropolitan Statistical Area
+17580   Clovis, NM Micropolitan Statistical Area
+17660   Coeur d'Alene, ID Metropolitan Statistical Area
+17700   Coffeyville, KS Micropolitan Statistical Area
+17740   Coldwater, MI Micropolitan Statistical Area
+17780   College Station-Bryan, TX Metropolitan Statistical Area
+17820   Colorado Springs, CO Metropolitan Statistical Area
+17860   Columbia, MO Metropolitan Statistical Area
+17900   Columbia, SC Metropolitan Statistical Area
+17940   Columbia, TN Micropolitan Statistical Area
+17980   Columbus, GA-AL Metropolitan Statistical Area
+18020   Columbus, IN Metropolitan Statistical Area
+18060   Columbus, MS Micropolitan Statistical Area
+18100   Columbus, NE Micropolitan Statistical Area
+18140   Columbus, OH Metropolitan Statistical Area
+18180   Concord, NH Micropolitan Statistical Area
+18220   Connersville, IN Micropolitan Statistical Area
+18260   Cookeville, TN Micropolitan Statistical Area
+18300   Coos Bay, OR Micropolitan Statistical Area
+18340   Corbin, KY Micropolitan Statistical Area
+18380   Cordele, GA Micropolitan Statistical Area
+18420   Corinth, MS Micropolitan Statistical Area
+18460   Cornelia, GA Micropolitan Statistical Area
+18500   Corning, NY Micropolitan Statistical Area
+18580   Corpus Christi, TX Metropolitan Statistical Area
+18620   Corsicana, TX Micropolitan Statistical Area
+18660   Cortland, NY Micropolitan Statistical Area
+18700   Corvallis, OR Metropolitan Statistical Area
+18740   Coshocton, OH Micropolitan Statistical Area
+18820   Crawfordsville, IN Micropolitan Statistical Area
+18860   Crescent City, CA Micropolitan Statistical Area
+18900   Crossville, TN Micropolitan Statistical Area
+18940   Crowley, LA Micropolitan Statistical Area
+18980   Cullman, AL Micropolitan Statistical Area
+19020   Culpeper, VA Micropolitan Statistical Area
+19060   Cumberland, MD-WV Metropolitan Statistical Area
+19100   Dallas-Fort Worth-Arlington, TX Metropolitan Statistical Area
+19140   Dalton, GA Metropolitan Statistical Area
+19180   Danville, IL Metropolitan Statistical Area
+19220   Danville, KY Micropolitan Statistical Area
+19260   Danville, VA Metropolitan Statistical Area
+19300   Daphne-Fairhope-Foley, AL Micropolitan Statistical Area
+19340   Davenport-Moline-Rock Island, IA-IL Metropolitan Statistical Area
+19380   Dayton, OH Metropolitan Statistical Area
+19460   Decatur, AL Metropolitan Statistical Area
+19500   Decatur, IL Metropolitan Statistical Area
+19540   Decatur, IN Micropolitan Statistical Area
+19580   Defiance, OH Micropolitan Statistical Area
+19620   Del Rio, TX Micropolitan Statistical Area
+19660   Deltona-Daytona Beach-Ormond Beach, FL Metropolitan Statistical Area
+19700   Deming, NM Micropolitan Statistical Area
+19740   Denver-Aurora, CO Metropolitan Statistical Area
+19760   De Ridder, LA Micropolitan Statistical Area
+19780   Des Moines-West Des Moines, IA Metropolitan Statistical Area
+19820   Detroit-Warren-Livonia, MI Metropolitan Statistical Area
+19860   Dickinson, ND Micropolitan Statistical Area
+19900   Dillon, SC Micropolitan Statistical Area
+19940   Dixon, IL Micropolitan Statistical Area
+19980   Dodge City, KS Micropolitan Statistical Area
+20020   Dothan, AL Metropolitan Statistical Area
+20060   Douglas, GA Micropolitan Statistical Area
+20100   Dover, DE Metropolitan Statistical Area
+20140   Dublin, GA Micropolitan Statistical Area
+20180   DuBois, PA Micropolitan Statistical Area
+20220   Dubuque, IA Metropolitan Statistical Area
+20260   Duluth, MN-WI Metropolitan Statistical Area
+20300   Dumas, TX Micropolitan Statistical Area
+20340   Duncan, OK Micropolitan Statistical Area
+20380   Dunn, NC Micropolitan Statistical Area
+20420   Durango, CO Micropolitan Statistical Area
+20460   Durant, OK Micropolitan Statistical Area
+20500   Durham, NC Metropolitan Statistical Area
+20540   Dyersburg, TN Micropolitan Statistical Area
+20580   Eagle Pass, TX Micropolitan Statistical Area
+20620   East Liverpool-Salem, OH Micropolitan Statistical Area
+20660   Easton, MD Micropolitan Statistical Area
+20700   East Stroudsburg, PA Micropolitan Statistical Area
+20740   Eau Claire, WI Metropolitan Statistical Area
+20780   Edwards, CO Micropolitan Statistical Area
+20820   Effingham, IL Micropolitan Statistical Area
+20900   El Campo, TX Micropolitan Statistical Area
+20940   El Centro, CA Metropolitan Statistical Area
+20980   El Dorado, AR Micropolitan Statistical Area
+21020   Elizabeth City, NC Micropolitan Statistical Area
+21060   Elizabethtown, KY Metropolitan Statistical Area
+21120   Elk City, OK Micropolitan Statistical Area
+21140   Elkhart-Goshen, IN Metropolitan Statistical Area
+21220   Elko, NV Micropolitan Statistical Area
+21260   Ellensburg, WA Micropolitan Statistical Area
+21300   Elmira, NY Metropolitan Statistical Area
+21340   El Paso, TX Metropolitan Statistical Area
+21380   Emporia, KS Micropolitan Statistical Area
+21420   Enid, OK Micropolitan Statistical Area
+21460   Enterprise-Ozark, AL Micropolitan Statistical Area
+21500   Erie, PA Metropolitan Statistical Area
+21540   Escanaba, MI Micropolitan Statistical Area
+21580   Espanola, NM Micropolitan Statistical Area
+21640   Eufaula, AL-GA Micropolitan Statistical Area
+21660   Eugene-Springfield, OR Metropolitan Statistical Area
+21700   Eureka-Arcata-Fortuna, CA Micropolitan Statistical Area
+21740   Evanston, WY Micropolitan Statistical Area
+21780   Evansville, IN-KY Metropolitan Statistical Area
+21820   Fairbanks, AK Metropolitan Statistical Area
+21860   Fairmont, MN Micropolitan Statistical Area
+21900   Fairmont, WV Micropolitan Statistical Area
+21980   Fallon, NV Micropolitan Statistical Area
+22020   Fargo, ND-MN Metropolitan Statistical Area
+22060   Faribault-Northfield, MN Micropolitan Statistical Area
+22100   Farmington, MO Micropolitan Statistical Area
+22140   Farmington, NM Metropolitan Statistical Area
+22180   Fayetteville, NC Metropolitan Statistical Area
+22220   Fayetteville-Springdale-Rogers, AR-MO Metropolitan Statistical Area
+22260   Fergus Falls, MN Micropolitan Statistical Area
+22280   Fernley, NV Micropolitan Statistical Area
+22300   Findlay, OH Micropolitan Statistical Area
+22340   Fitzgerald, GA Micropolitan Statistical Area
+22380   Flagstaff, AZ Metropolitan Statistical Area
+22420   Flint, MI Metropolitan Statistical Area
+22500   Florence, SC Metropolitan Statistical Area
+22520   Florence-Muscle Shoals, AL Metropolitan Statistical Area
+22540   Fond du Lac, WI Metropolitan Statistical Area
+22580   Forest City, NC Micropolitan Statistical Area
+22620   Forrest City, AR Micropolitan Statistical Area
+22660   Fort Collins-Loveland, CO Metropolitan Statistical Area
+22700   Fort Dodge, IA Micropolitan Statistical Area
+22780   Fort Leonard Wood, MO Micropolitan Statistical Area
+22800   Fort Madison-Keokuk, IA-MO Micropolitan Statistical Area
+22820   Fort Morgan, CO Micropolitan Statistical Area
+22840   Fort Payne, AL Micropolitan Statistical Area
+22860   Fort Polk South, LA Micropolitan Statistical Area
+22900   Fort Smith, AR-OK Metropolitan Statistical Area
+22980   Fort Valley, GA Micropolitan Statistical Area
+23020   Fort Walton Beach-Crestview-Destin, FL Metropolitan Statistical Area
+23060   Fort Wayne, IN Metropolitan Statistical Area
+23140   Frankfort, IN Micropolitan Statistical Area
+23180   Frankfort, KY Micropolitan Statistical Area
+23240   Fredericksburg, TX Micropolitan Statistical Area
+23300   Freeport, IL Micropolitan Statistical Area
+23340   Fremont, NE Micropolitan Statistical Area
+23380   Fremont, OH Micropolitan Statistical Area
+23420   Fresno, CA Metropolitan Statistical Area
+23460   Gadsden, AL Metropolitan Statistical Area
+23500   Gaffney, SC Micropolitan Statistical Area
+23540   Gainesville, FL Metropolitan Statistical Area
+23580   Gainesville, GA Metropolitan Statistical Area
+23620   Gainesville, TX Micropolitan Statistical Area
+23660   Galesburg, IL Micropolitan Statistical Area
+23700   Gallup, NM Micropolitan Statistical Area
+23780   Garden City, KS Micropolitan Statistical Area
+23820   Gardnerville Ranchos, NV Micropolitan Statistical Area
+23860   Georgetown, SC Micropolitan Statistical Area
+23900   Gettysburg, PA Micropolitan Statistical Area
+23940   Gillette, WY Micropolitan Statistical Area
+23980   Glasgow, KY Micropolitan Statistical Area
+24020   Glens Falls, NY Metropolitan Statistical Area
+24100   Gloversville, NY Micropolitan Statistical Area
+24140   Goldsboro, NC Metropolitan Statistical Area
+24180   Granbury, TX Micropolitan Statistical Area
+24220   Grand Forks, ND-MN Metropolitan Statistical Area
+24260   Grand Island, NE Micropolitan Statistical Area
+24300   Grand Junction, CO Metropolitan Statistical Area
+24340   Grand Rapids-Wyoming, MI Metropolitan Statistical Area
+24380   Grants, NM Micropolitan Statistical Area
+24420   Grants Pass, OR Micropolitan Statistical Area
+24460   Great Bend, KS Micropolitan Statistical Area
+24500   Great Falls, MT Metropolitan Statistical Area
+24540   Greeley, CO Metropolitan Statistical Area
+24580   Green Bay, WI Metropolitan Statistical Area
+24620   Greeneville, TN Micropolitan Statistical Area
+24660   Greensboro-High Point, NC Metropolitan Statistical Area
+24700   Greensburg, IN Micropolitan Statistical Area
+24740   Greenville, MS Micropolitan Statistical Area
+24780   Greenville, NC Metropolitan Statistical Area
+24820   Greenville, OH Micropolitan Statistical Area
+24860   Greenville-Mauldin-Easley, SC Metropolitan Statistical Area
+24900   Greenwood, MS Micropolitan Statistical Area
+24940   Greenwood, SC Micropolitan Statistical Area
+24980   Grenada, MS Micropolitan Statistical Area
+25060   Gulfport-Biloxi, MS Metropolitan Statistical Area
+25100   Guymon, OK Micropolitan Statistical Area
+25180   Hagerstown-Martinsburg, MD-WV Metropolitan Statistical Area
+25220   Hammond, LA Micropolitan Statistical Area
+25260   Hanford-Corcoran, CA Metropolitan Statistical Area
+25300   Hannibal, MO Micropolitan Statistical Area
+25340   Harriman, TN Micropolitan Statistical Area
+25380   Harrisburg, IL Micropolitan Statistical Area
+25420   Harrisburg-Carlisle, PA Metropolitan Statistical Area
+25460   Harrison, AR Micropolitan Statistical Area
+25500   Harrisonburg, VA Metropolitan Statistical Area
+25540   Hartford-West Hartford-East Hartford, CT Metropolitan Statistical Area
+25580   Hastings, NE Micropolitan Statistical Area
+25620   Hattiesburg, MS Metropolitan Statistical Area
+25660   Havre, MT Micropolitan Statistical Area
+25700   Hays, KS Micropolitan Statistical Area
+25720   Heber, UT Micropolitan Statistical Area
+25740   Helena, MT Micropolitan Statistical Area
+25780   Henderson, NC Micropolitan Statistical Area
+25820   Hereford, TX Micropolitan Statistical Area
+25860   Hickory-Lenoir-Morganton, NC Metropolitan Statistical Area
+25900   Hilo, HI Micropolitan Statistical Area
+25940   Hilton Head Island-Beaufort, SC Micropolitan Statistical Area
+25980   Hinesville-Fort Stewart, GA Metropolitan Statistical Area
+26020   Hobbs, NM Micropolitan Statistical Area
+26100   Holland-Grand Haven, MI Metropolitan Statistical Area
+26140   Homosassa Springs, FL Micropolitan Statistical Area
+26180   Honolulu, HI Metropolitan Statistical Area
+26220   Hood River, OR Micropolitan Statistical Area
+26260   Hope, AR Micropolitan Statistical Area
+26300   Hot Springs, AR Metropolitan Statistical Area
+26340   Houghton, MI Micropolitan Statistical Area
+26380   Houma-Bayou Cane-Thibodaux, LA Metropolitan Statistical Area
+26420   Houston-Sugar Land-Baytown, TX Metropolitan Statistical Area
+26460   Hudson, NY Micropolitan Statistical Area
+26480   Humboldt, TN Micropolitan Statistical Area
+26500   Huntingdon, PA Micropolitan Statistical Area
+26540   Huntington, IN Micropolitan Statistical Area
+26580   Huntington-Ashland, WV-KY-OH Metropolitan Statistical Area
+26620   Huntsville, AL Metropolitan Statistical Area
+26660   Huntsville, TX Micropolitan Statistical Area
+26700   Huron, SD Micropolitan Statistical Area
+26740   Hutchinson, KS Micropolitan Statistical Area
+26780   Hutchinson, MN Micropolitan Statistical Area
+26820   Idaho Falls, ID Metropolitan Statistical Area
+26860   Indiana, PA Micropolitan Statistical Area
+26900   Indianapolis-Carmel, IN Metropolitan Statistical Area
+26940   Indianola, MS Micropolitan Statistical Area
+26980   Iowa City, IA Metropolitan Statistical Area
+27020   Iron Mountain, MI-WI Micropolitan Statistical Area
+27060   Ithaca, NY Metropolitan Statistical Area
+27100   Jackson, MI Metropolitan Statistical Area
+27140   Jackson, MS Metropolitan Statistical Area
+27180   Jackson, TN Metropolitan Statistical Area
+27220   Jackson, WY-ID Micropolitan Statistical Area
+27260   Jacksonville, FL Metropolitan Statistical Area
+27300   Jacksonville, IL Micropolitan Statistical Area
+27340   Jacksonville, NC Metropolitan Statistical Area
+27380   Jacksonville, TX Micropolitan Statistical Area
+27420   Jamestown, ND Micropolitan Statistical Area
+27460   Jamestown-Dunkirk-Fredonia, NY Micropolitan Statistical Area
+27500   Janesville, WI Metropolitan Statistical Area
+27540   Jasper, IN Micropolitan Statistical Area
+27620   Jefferson City, MO Metropolitan Statistical Area
+27660   Jennings, LA Micropolitan Statistical Area
+27700   Jesup, GA Micropolitan Statistical Area
+27740   Johnson City, TN Metropolitan Statistical Area
+27780   Johnstown, PA Metropolitan Statistical Area
+27860   Jonesboro, AR Metropolitan Statistical Area
+27900   Joplin, MO Metropolitan Statistical Area
+27940   Juneau, AK Micropolitan Statistical Area
+27980   Kahului-Wailuku, HI Micropolitan Statistical Area
+28020   Kalamazoo-Portage, MI Metropolitan Statistical Area
+28060   Kalispell, MT Micropolitan Statistical Area
+28100   Kankakee-Bradley, IL Metropolitan Statistical Area
+28140   Kansas City, MO-KS Metropolitan Statistical Area
+28180   Kapaa, HI Micropolitan Statistical Area
+28260   Kearney, NE Micropolitan Statistical Area
+28300   Keene, NH Micropolitan Statistical Area
+28340   Kendallville, IN Micropolitan Statistical Area
+28380   Kennett, MO Micropolitan Statistical Area
+28420   Kennewick-Richland-Pasco, WA Metropolitan Statistical Area
+28500   Kerrville, TX Micropolitan Statistical Area
+28540   Ketchikan, AK Micropolitan Statistical Area
+28580   Key West, FL Micropolitan Statistical Area
+28620   Kill Devil Hills, NC Micropolitan Statistical Area
+28660   Killeen-Temple-Fort Hood, TX Metropolitan Statistical Area
+28700   Kingsport-Bristol-Bristol, TN-VA Metropolitan Statistical Area
+28740   Kingston, NY Metropolitan Statistical Area
+28780   Kingsville, TX Micropolitan Statistical Area
+28820   Kinston, NC Micropolitan Statistical Area
+28860   Kirksville, MO Micropolitan Statistical Area
+28900   Klamath Falls, OR Micropolitan Statistical Area
+28940   Knoxville, TN Metropolitan Statistical Area
+28980   Kodiak, AK Micropolitan Statistical Area
+29020   Kokomo, IN Metropolitan Statistical Area
+29060   Laconia, NH Micropolitan Statistical Area
+29100   La Crosse, WI-MN Metropolitan Statistical Area
+29140   Lafayette, IN Metropolitan Statistical Area
+29180   Lafayette, LA Metropolitan Statistical Area
+29220   La Follette, TN Micropolitan Statistical Area
+29260   La Grande, OR Micropolitan Statistical Area
+29300   LaGrange, GA Micropolitan Statistical Area
+29340   Lake Charles, LA Metropolitan Statistical Area
+29380   Lake City, FL Micropolitan Statistical Area
+29420   Lake Havasu City-Kingman, AZ Metropolitan Statistical Area
+29460   Lakeland, FL Metropolitan Statistical Area
+29500   Lamesa, TX Micropolitan Statistical Area
+29540   Lancaster, PA Metropolitan Statistical Area
+29580   Lancaster, SC Micropolitan Statistical Area
+29620   Lansing-East Lansing, MI Metropolitan Statistical Area
+29660   Laramie, WY Micropolitan Statistical Area
+29700   Laredo, TX Metropolitan Statistical Area
+29740   Las Cruces, NM Metropolitan Statistical Area
+29780   Las Vegas, NM Micropolitan Statistical Area
+29820   Las Vegas-Paradise, NV Metropolitan Statistical Area
+29860   Laurel, MS Micropolitan Statistical Area
+29900   Laurinburg, NC Micropolitan Statistical Area
+29940   Lawrence, KS Metropolitan Statistical Area
+29980   Lawrenceburg, TN Micropolitan Statistical Area
+30020   Lawton, OK Metropolitan Statistical Area
+30060   Lebanon, MO Micropolitan Statistical Area
+30100   Lebanon, NH-VT Micropolitan Statistical Area
+30140   Lebanon, PA Metropolitan Statistical Area
+30220   Levelland, TX Micropolitan Statistical Area
+30260   Lewisburg, PA Micropolitan Statistical Area
+30280   Lewisburg, TN Micropolitan Statistical Area
+30300   Lewiston, ID-WA Metropolitan Statistical Area
+30340   Lewiston-Auburn, ME Metropolitan Statistical Area
+30380   Lewistown, PA Micropolitan Statistical Area
+30420   Lexington, NE Micropolitan Statistical Area
+30460   Lexington-Fayette, KY Metropolitan Statistical Area
+30500   Lexington Park, MD Micropolitan Statistical Area
+30580   Liberal, KS Micropolitan Statistical Area
+30620   Lima, OH Metropolitan Statistical Area
+30660   Lincoln, IL Micropolitan Statistical Area
+30700   Lincoln, NE Metropolitan Statistical Area
+30740   Lincolnton, NC Micropolitan Statistical Area
+30780   Little Rock-North Little Rock-Conway, AR Metropolitan Statistical Area
+30820   Lock Haven, PA Micropolitan Statistical Area
+30860   Logan, UT-ID Metropolitan Statistical Area
+30900   Logansport, IN Micropolitan Statistical Area
+30940   London, KY Micropolitan Statistical Area
+30980   Longview, TX Metropolitan Statistical Area
+31020   Longview, WA Metropolitan Statistical Area
+31060   Los Alamos, NM Micropolitan Statistical Area
+31100   Los Angeles-Long Beach-Santa Ana, CA Metropolitan Statistical Area
+31140   Louisville/Jefferson County, KY-IN Metropolitan Statistical Area
+31180   Lubbock, TX Metropolitan Statistical Area
+31260   Lufkin, TX Micropolitan Statistical Area
+31300   Lumberton, NC Micropolitan Statistical Area
+31340   Lynchburg, VA Metropolitan Statistical Area
+31380   Macomb, IL Micropolitan Statistical Area
+31420   Macon, GA Metropolitan Statistical Area
+31460   Madera, CA Metropolitan Statistical Area
+31500   Madison, IN Micropolitan Statistical Area
+31540   Madison, WI Metropolitan Statistical Area
+31580   Madisonville, KY Micropolitan Statistical Area
+31620   Magnolia, AR Micropolitan Statistical Area
+31660   Malone, NY Micropolitan Statistical Area
+31700   Manchester-Nashua, NH Metropolitan Statistical Area
+31740   Manhattan, KS Micropolitan Statistical Area
+31820   Manitowoc, WI Micropolitan Statistical Area
+31860   Mankato-North Mankato, MN Micropolitan Statistical Area
+31900   Mansfield, OH Metropolitan Statistical Area
+31940   Marinette, WI-MI Micropolitan Statistical Area
+31980   Marion, IN Micropolitan Statistical Area
+32020   Marion, OH Micropolitan Statistical Area
+32060   Marion-Herrin, IL Micropolitan Statistical Area
+32100   Marquette, MI Micropolitan Statistical Area
+32140   Marshall, MN Micropolitan Statistical Area
+32180   Marshall, MO Micropolitan Statistical Area
+32220   Marshall, TX Micropolitan Statistical Area
+32260   Marshalltown, IA Micropolitan Statistical Area
+32270   Marshfield-Wisconsin Rapids, WI Micropolitan Statistical Area
+32280   Martin, TN Micropolitan Statistical Area
+32300   Martinsville, VA Micropolitan Statistical Area
+32340   Maryville, MO Micropolitan Statistical Area
+32380   Mason City, IA Micropolitan Statistical Area
+32460   Mayfield, KY Micropolitan Statistical Area
+32500   Maysville, KY Micropolitan Statistical Area
+32540   McAlester, OK Micropolitan Statistical Area
+32580   McAllen-Edinburg-Mission, TX Metropolitan Statistical Area
+32620   McComb, MS Micropolitan Statistical Area
+32660   McMinnville, TN Micropolitan Statistical Area
+32700   McPherson, KS Micropolitan Statistical Area
+32740   Meadville, PA Micropolitan Statistical Area
+32780   Medford, OR Metropolitan Statistical Area
+32820   Memphis, TN-MS-AR Metropolitan Statistical Area
+32860   Menomonie, WI Micropolitan Statistical Area
+32900   Merced, CA Metropolitan Statistical Area
+32940   Meridian, MS Micropolitan Statistical Area
+32980   Merrill, WI Micropolitan Statistical Area
+33020   Mexico, MO Micropolitan Statistical Area
+33060   Miami, OK Micropolitan Statistical Area
+33100   Miami-Fort Lauderdale-Pompano Beach, FL Metropolitan Statistical Area
+33140   Michigan City-La Porte, IN Metropolitan Statistical Area
+33180   Middlesborough, KY Micropolitan Statistical Area
+33220   Midland, MI Micropolitan Statistical Area
+33260   Midland, TX Metropolitan Statistical Area
+33300   Milledgeville, GA Micropolitan Statistical Area
+33340   Milwaukee-Waukesha-West Allis, WI Metropolitan Statistical Area
+33380   Minden, LA Micropolitan Statistical Area
+33420   Mineral Wells, TX Micropolitan Statistical Area
+33460   Minneapolis-St. Paul-Bloomington, MN-WI Metropolitan Statistical Area
+33500   Minot, ND Micropolitan Statistical Area
+33540   Missoula, MT Metropolitan Statistical Area
+33580   Mitchell, SD Micropolitan Statistical Area
+33620   Moberly, MO Micropolitan Statistical Area
+33660   Mobile, AL Metropolitan Statistical Area
+33700   Modesto, CA Metropolitan Statistical Area
+33740   Monroe, LA Metropolitan Statistical Area
+33780   Monroe, MI Metropolitan Statistical Area
+33820   Monroe, WI Micropolitan Statistical Area
+33860   Montgomery, AL Metropolitan Statistical Area
+33940   Montrose, CO Micropolitan Statistical Area
+33980   Morehead City, NC Micropolitan Statistical Area
+34020   Morgan City, LA Micropolitan Statistical Area
+34060   Morgantown, WV Metropolitan Statistical Area
+34100   Morristown, TN Metropolitan Statistical Area
+34140   Moscow, ID Micropolitan Statistical Area
+34180   Moses Lake, WA Micropolitan Statistical Area
+34220   Moultrie, GA Micropolitan Statistical Area
+34260   Mountain Home, AR Micropolitan Statistical Area
+34300   Mountain Home, ID Micropolitan Statistical Area
+34340   Mount Airy, NC Micropolitan Statistical Area
+34380   Mount Pleasant, MI Micropolitan Statistical Area
+34420   Mount Pleasant, TX Micropolitan Statistical Area
+34460   Mount Sterling, KY Micropolitan Statistical Area
+34500   Mount Vernon, IL Micropolitan Statistical Area
+34540   Mount Vernon, OH Micropolitan Statistical Area
+34580   Mount Vernon-Anacortes, WA Metropolitan Statistical Area
+34620   Muncie, IN Metropolitan Statistical Area
+34660   Murray, KY Micropolitan Statistical Area
+34700   Muscatine, IA Micropolitan Statistical Area
+34740   Muskegon-Norton Shores, MI Metropolitan Statistical Area
+34780   Muskogee, OK Micropolitan Statistical Area
+34820   Myrtle Beach-Conway-North Myrtle Beach, SC Metropolitan Statistical Area
+34860   Nacogdoches, TX Micropolitan Statistical Area
+34900   Napa, CA Metropolitan Statistical Area
+34940   Naples-Marco Island, FL Metropolitan Statistical Area
+34980   Nashville-Davidson--Murfreesboro--Franklin, TN Metropolitan Statistical Area
+35020   Natchez, MS-LA Micropolitan Statistical Area
+35060   Natchitoches, LA Micropolitan Statistical Area
+35100   New Bern, NC Micropolitan Statistical Area
+35140   Newberry, SC Micropolitan Statistical Area
+35220   New Castle, IN Micropolitan Statistical Area
+35260   New Castle, PA Micropolitan Statistical Area
+35300   New Haven-Milford, CT Metropolitan Statistical Area
+35340   New Iberia, LA Micropolitan Statistical Area
+35380   New Orleans-Metairie-Kenner, LA Metropolitan Statistical Area
+35420   New Philadelphia-Dover, OH Micropolitan Statistical Area
+35460   Newport, TN Micropolitan Statistical Area
+35500   Newton, IA Micropolitan Statistical Area
+35580   New Ulm, MN Micropolitan Statistical Area
+35620   New York-Northern New Jersey-Long Island, NY-NJ-PA Metropolitan Statistical Area
+35660   Niles-Benton Harbor, MI Metropolitan Statistical Area
+35700   Nogales, AZ Micropolitan Statistical Area
+35740   Norfolk, NE Micropolitan Statistical Area
+35820   North Platte, NE Micropolitan Statistical Area
+35860   North Vernon, IN Micropolitan Statistical Area
+35900   North Wilkesboro, NC Micropolitan Statistical Area
+35940   Norwalk, OH Micropolitan Statistical Area
+35980   Norwich-New London, CT Metropolitan Statistical Area
+36020   Oak Harbor, WA Micropolitan Statistical Area
+36060   Oak Hill, WV Micropolitan Statistical Area
+36100   Ocala, FL Metropolitan Statistical Area
+36140   Ocean City, NJ Metropolitan Statistical Area
+36180   Ocean Pines, MD Micropolitan Statistical Area
+36220   Odessa, TX Metropolitan Statistical Area
+36260   Ogden-Clearfield, UT Metropolitan Statistical Area
+36300   Ogdensburg-Massena, NY Micropolitan Statistical Area
+36340   Oil City, PA Micropolitan Statistical Area
+36380   Okeechobee, FL Micropolitan Statistical Area
+36420   Oklahoma City, OK Metropolitan Statistical Area
+36460   Olean, NY Micropolitan Statistical Area
+36500   Olympia, WA Metropolitan Statistical Area
+36540   Omaha-Council Bluffs, NE-IA Metropolitan Statistical Area
+36580   Oneonta, NY Micropolitan Statistical Area
+36620   Ontario, OR-ID Micropolitan Statistical Area
+36660   Opelousas-Eunice, LA Micropolitan Statistical Area
+36700   Orangeburg, SC Micropolitan Statistical Area
+36740   Orlando-Kissimmee, FL Metropolitan Statistical Area
+36780   Oshkosh-Neenah, WI Metropolitan Statistical Area
+36820   Oskaloosa, IA Micropolitan Statistical Area
+36860   Ottawa-Streator, IL Micropolitan Statistical Area
+36900   Ottumwa, IA Micropolitan Statistical Area
+36940   Owatonna, MN Micropolitan Statistical Area
+36980   Owensboro, KY Metropolitan Statistical Area
+37020   Owosso, MI Micropolitan Statistical Area
+37060   Oxford, MS Micropolitan Statistical Area
+37100   Oxnard-Thousand Oaks-Ventura, CA Metropolitan Statistical Area
+37140   Paducah, KY-IL Micropolitan Statistical Area
+37220   Pahrump, NV Micropolitan Statistical Area
+37260   Palatka, FL Micropolitan Statistical Area
+37300   Palestine, TX Micropolitan Statistical Area
+37340   Palm Bay-Melbourne-Titusville, FL Metropolitan Statistical Area
+37380   Palm Coast, FL Metropolitan Statistical Area
+37420   Pampa, TX Micropolitan Statistical Area
+37460   Panama City-Lynn Haven, FL Metropolitan Statistical Area
+37500   Paragould, AR Micropolitan Statistical Area
+37540   Paris, TN Micropolitan Statistical Area
+37580   Paris, TX Micropolitan Statistical Area
+37620   Parkersburg-Marietta-Vienna, WV-OH Metropolitan Statistical Area
+37660   Parsons, KS Micropolitan Statistical Area
+37700   Pascagoula, MS Metropolitan Statistical Area
+37740   Payson, AZ Micropolitan Statistical Area
+37780   Pecos, TX Micropolitan Statistical Area
+37800   Pella, IA Micropolitan Statistical Area
+37820   Pendleton-Hermiston, OR Micropolitan Statistical Area
+37860   Pensacola-Ferry Pass-Brent, FL Metropolitan Statistical Area
+37900   Peoria, IL Metropolitan Statistical Area
+37940   Peru, IN Micropolitan Statistical Area
+37980   Philadelphia-Camden-Wilmington, PA-NJ-DE-MD Metropolitan Statistical Area
+38020   Phoenix Lake-Cedar Ridge, CA Micropolitan Statistical Area
+38060   Phoenix-Mesa-Scottsdale, AZ Metropolitan Statistical Area
+38100   Picayune, MS Micropolitan Statistical Area
+38180   Pierre, SD Micropolitan Statistical Area
+38200   Pierre Part, LA Micropolitan Statistical Area
+38220   Pine Bluff, AR Metropolitan Statistical Area
+38260   Pittsburg, KS Micropolitan Statistical Area
+38300   Pittsburgh, PA Metropolitan Statistical Area
+38340   Pittsfield, MA Metropolitan Statistical Area
+38380   Plainview, TX Micropolitan Statistical Area
+38420   Platteville, WI Micropolitan Statistical Area
+38460   Plattsburgh, NY Micropolitan Statistical Area
+38500   Plymouth, IN Micropolitan Statistical Area
+38540   Pocatello, ID Metropolitan Statistical Area
+38580   Point Pleasant, WV-OH Micropolitan Statistical Area
+38620   Ponca City, OK Micropolitan Statistical Area
+38700   Pontiac, IL Micropolitan Statistical Area
+38740   Poplar Bluff, MO Micropolitan Statistical Area
+38780   Portales, NM Micropolitan Statistical Area
+38820   Port Angeles, WA Micropolitan Statistical Area
+38860   Portland-South Portland-Biddeford, ME Metropolitan Statistical Area
+38900   Portland-Vancouver-Beaverton, OR-WA Metropolitan Statistical Area
+38940   Port St. Lucie, FL Metropolitan Statistical Area
+39020   Portsmouth, OH Micropolitan Statistical Area
+39060   Pottsville, PA Micropolitan Statistical Area
+39100   Poughkeepsie-Newburgh-Middletown, NY Metropolitan Statistical Area
+39140   Prescott, AZ Metropolitan Statistical Area
+39220   Price, UT Micropolitan Statistical Area
+39260   Prineville, OR Micropolitan Statistical Area
+39300   Providence-New Bedford-Fall River, RI-MA Metropolitan Statistical Area
+39340   Provo-Orem, UT Metropolitan Statistical Area
+39380   Pueblo, CO Metropolitan Statistical Area
+39420   Pullman, WA Micropolitan Statistical Area
+39460   Punta Gorda, FL Metropolitan Statistical Area
+39500   Quincy, IL-MO Micropolitan Statistical Area
+39540   Racine, WI Metropolitan Statistical Area
+39580   Raleigh-Cary, NC Metropolitan Statistical Area
+39660   Rapid City, SD Metropolitan Statistical Area
+39700   Raymondville, TX Micropolitan Statistical Area
+39740   Reading, PA Metropolitan Statistical Area
+39780   Red Bluff, CA Micropolitan Statistical Area
+39820   Redding, CA Metropolitan Statistical Area
+39860   Red Wing, MN Micropolitan Statistical Area
+39900   Reno-Sparks, NV Metropolitan Statistical Area
+39940   Rexburg, ID Micropolitan Statistical Area
+39980   Richmond, IN Micropolitan Statistical Area
+40060   Richmond, VA Metropolitan Statistical Area
+40080   Richmond-Berea, KY Micropolitan Statistical Area
+40100   Rio Grande City-Roma, TX Micropolitan Statistical Area
+40140   Riverside-San Bernardino-Ontario, CA Metropolitan Statistical Area
+40180   Riverton, WY Micropolitan Statistical Area
+40220   Roanoke, VA Metropolitan Statistical Area
+40260   Roanoke Rapids, NC Micropolitan Statistical Area
+40300   Rochelle, IL Micropolitan Statistical Area
+40340   Rochester, MN Metropolitan Statistical Area
+40380   Rochester, NY Metropolitan Statistical Area
+40420   Rockford, IL Metropolitan Statistical Area
+40460   Rockingham, NC Micropolitan Statistical Area
+40500   Rockland, ME Micropolitan Statistical Area
+40540   Rock Springs, WY Micropolitan Statistical Area
+40580   Rocky Mount, NC Metropolitan Statistical Area
+40620   Rolla, MO Micropolitan Statistical Area
+40660   Rome, GA Metropolitan Statistical Area
+40700   Roseburg, OR Micropolitan Statistical Area
+40740   Roswell, NM Micropolitan Statistical Area
+40760   Ruidoso, NM Micropolitan Statistical Area
+40780   Russellville, AR Micropolitan Statistical Area
+40820   Ruston, LA Micropolitan Statistical Area
+40860   Rutland, VT Micropolitan Statistical Area
+40900   Sacramento--Arden-Arcade--Roseville, CA Metropolitan Statistical Area
+40940   Safford, AZ Micropolitan Statistical Area
+40980   Saginaw-Saginaw Township North, MI Metropolitan Statistical Area
+41060   St. Cloud, MN Metropolitan Statistical Area
+41100   St. George, UT Metropolitan Statistical Area
+41140   St. Joseph, MO-KS Metropolitan Statistical Area
+41180   St. Louis, MO-IL Metropolitan Statistical Area
+41220   St. Marys, GA Micropolitan Statistical Area
+41260   St. Marys, PA Micropolitan Statistical Area
+41420   Salem, OR Metropolitan Statistical Area
+41460   Salina, KS Micropolitan Statistical Area
+41500   Salinas, CA Metropolitan Statistical Area
+41540   Salisbury, MD Metropolitan Statistical Area
+41580   Salisbury, NC Micropolitan Statistical Area
+41620   Salt Lake City, UT Metropolitan Statistical Area
+41660   San Angelo, TX Metropolitan Statistical Area
+41700   San Antonio, TX Metropolitan Statistical Area
+41740   San Diego-Carlsbad-San Marcos, CA Metropolitan Statistical Area
+41780   Sandusky, OH Metropolitan Statistical Area
+41820   Sanford, NC Micropolitan Statistical Area
+41860   San Francisco-Oakland-Fremont, CA Metropolitan Statistical Area
+41940   San Jose-Sunnyvale-Santa Clara, CA Metropolitan Statistical Area
+42020   San Luis Obispo-Paso Robles, CA Metropolitan Statistical Area
+42060   Santa Barbara-Santa Maria-Goleta, CA Metropolitan Statistical Area
+42100   Santa Cruz-Watsonville, CA Metropolitan Statistical Area
+42140   Santa Fe, NM Metropolitan Statistical Area
+42220   Santa Rosa-Petaluma, CA Metropolitan Statistical Area
+42260   Sarasota-Bradenton-Venice, FL Metropolitan Statistical Area
+42300   Sault Ste. Marie, MI Micropolitan Statistical Area
+42340   Savannah, GA Metropolitan Statistical Area
+42380   Sayre, PA Micropolitan Statistical Area
+42420   Scottsbluff, NE Micropolitan Statistical Area
+42460   Scottsboro, AL Micropolitan Statistical Area
+42500   Scottsburg, IN Micropolitan Statistical Area
+42540   Scranton--Wilkes-Barre, PA Metropolitan Statistical Area
+42580   Seaford, DE Micropolitan Statistical Area
+42620   Searcy, AR Micropolitan Statistical Area
+42660   Seattle-Tacoma-Bellevue, WA Metropolitan Statistical Area
+42680   Sebastian-Vero Beach, FL Metropolitan Statistical Area
+42700   Sebring, FL Micropolitan Statistical Area
+42740   Sedalia, MO Micropolitan Statistical Area
+42780   Selinsgrove, PA Micropolitan Statistical Area
+42820   Selma, AL Micropolitan Statistical Area
+42860   Seneca, SC Micropolitan Statistical Area
+42900   Seneca Falls, NY Micropolitan Statistical Area
+42940   Sevierville, TN Micropolitan Statistical Area
+42980   Seymour, IN Micropolitan Statistical Area
+43060   Shawnee, OK Micropolitan Statistical Area
+43100   Sheboygan, WI Metropolitan Statistical Area
+43140   Shelby, NC Micropolitan Statistical Area
+43180   Shelbyville, TN Micropolitan Statistical Area
+43220   Shelton, WA Micropolitan Statistical Area
+43260   Sheridan, WY Micropolitan Statistical Area
+43300   Sherman-Denison, TX Metropolitan Statistical Area
+43340   Shreveport-Bossier City, LA Metropolitan Statistical Area
+43380   Sidney, OH Micropolitan Statistical Area
+43420   Sierra Vista-Douglas, AZ Micropolitan Statistical Area
+43460   Sikeston, MO Micropolitan Statistical Area
+43500   Silver City, NM Micropolitan Statistical Area
+43540   Silverthorne, CO Micropolitan Statistical Area
+43580   Sioux City, IA-NE-SD Metropolitan Statistical Area
+43620   Sioux Falls, SD Metropolitan Statistical Area
+43660   Snyder, TX Micropolitan Statistical Area
+43700   Somerset, KY Micropolitan Statistical Area
+43740   Somerset, PA Micropolitan Statistical Area
+43780   South Bend-Mishawaka, IN-MI Metropolitan Statistical Area
+43860   Southern Pines-Pinehurst, NC Micropolitan Statistical Area
+43900   Spartanburg, SC Metropolitan Statistical Area
+43940   Spearfish, SD Micropolitan Statistical Area
+43980   Spencer, IA Micropolitan Statistical Area
+44020   Spirit Lake, IA Micropolitan Statistical Area
+44060   Spokane, WA Metropolitan Statistical Area
+44100   Springfield, IL Metropolitan Statistical Area
+44140   Springfield, MA Metropolitan Statistical Area
+44180   Springfield, MO Metropolitan Statistical Area
+44220   Springfield, OH Metropolitan Statistical Area
+44260   Starkville, MS Micropolitan Statistical Area
+44300   State College, PA Metropolitan Statistical Area
+44340   Statesboro, GA Micropolitan Statistical Area
+44380   Statesville-Mooresville, NC Micropolitan Statistical Area
+44420   Staunton-Waynesboro, VA Micropolitan Statistical Area
+44500   Stephenville, TX Micropolitan Statistical Area
+44540   Sterling, CO Micropolitan Statistical Area
+44580   Sterling, IL Micropolitan Statistical Area
+44620   Stevens Point, WI Micropolitan Statistical Area
+44660   Stillwater, OK Micropolitan Statistical Area
+44700   Stockton, CA Metropolitan Statistical Area
+44740   Storm Lake, IA Micropolitan Statistical Area
+44780   Sturgis, MI Micropolitan Statistical Area
+44860   Sulphur Springs, TX Micropolitan Statistical Area
+44900   Summerville, GA Micropolitan Statistical Area
+44940   Sumter, SC Metropolitan Statistical Area
+44980   Sunbury, PA Micropolitan Statistical Area
+45000   Susanville, CA Micropolitan Statistical Area
+45020   Sweetwater, TX Micropolitan Statistical Area
+45060   Syracuse, NY Metropolitan Statistical Area
+45140   Tahlequah, OK Micropolitan Statistical Area
+45180   Talladega-Sylacauga, AL Micropolitan Statistical Area
+45220   Tallahassee, FL Metropolitan Statistical Area
+45260   Tallulah, LA Micropolitan Statistical Area
+45300   Tampa-St. Petersburg-Clearwater, FL Metropolitan Statistical Area
+45340   Taos, NM Micropolitan Statistical Area
+45380   Taylorville, IL Micropolitan Statistical Area
+45460   Terre Haute, IN Metropolitan Statistical Area
+45500   Texarkana, TX-Texarkana, AR Metropolitan Statistical Area
+45540   The Villages, FL Micropolitan Statistical Area
+45580   Thomaston, GA Micropolitan Statistical Area
+45620   Thomasville, GA Micropolitan Statistical Area
+45640   Thomasville-Lexington, NC Micropolitan Statistical Area
+45660   Tiffin, OH Micropolitan Statistical Area
+45700   Tifton, GA Micropolitan Statistical Area
+45740   Toccoa, GA Micropolitan Statistical Area
+45780   Toledo, OH Metropolitan Statistical Area
+45820   Topeka, KS Metropolitan Statistical Area
+45860   Torrington, CT Micropolitan Statistical Area
+45900   Traverse City, MI Micropolitan Statistical Area
+45940   Trenton-Ewing, NJ Metropolitan Statistical Area
+45980   Troy, AL Micropolitan Statistical Area
+46020   Truckee-Grass Valley, CA Micropolitan Statistical Area
+46060   Tucson, AZ Metropolitan Statistical Area
+46100   Tullahoma, TN Micropolitan Statistical Area
+46140   Tulsa, OK Metropolitan Statistical Area
+46180   Tupelo, MS Micropolitan Statistical Area
+46220   Tuscaloosa, AL Metropolitan Statistical Area
+46260   Tuskegee, AL Micropolitan Statistical Area
+46300   Twin Falls, ID Micropolitan Statistical Area
+46340   Tyler, TX Metropolitan Statistical Area
+46380   Ukiah, CA Micropolitan Statistical Area
+46420   Union, SC Micropolitan Statistical Area
+46460   Union City, TN-KY Micropolitan Statistical Area
+46500   Urbana, OH Micropolitan Statistical Area
+46540   Utica-Rome, NY Metropolitan Statistical Area
+46620   Uvalde, TX Micropolitan Statistical Area
+46660   Valdosta, GA Metropolitan Statistical Area
+46700   Vallejo-Fairfield, CA Metropolitan Statistical Area
+46740   Valley, AL Micropolitan Statistical Area
+46780   Van Wert, OH Micropolitan Statistical Area
+46820   Vermillion, SD Micropolitan Statistical Area
+46860   Vernal, UT Micropolitan Statistical Area
+46900   Vernon, TX Micropolitan Statistical Area
+46980   Vicksburg, MS Micropolitan Statistical Area
+47020   Victoria, TX Metropolitan Statistical Area
+47080   Vidalia, GA Micropolitan Statistical Area
+47180   Vincennes, IN Micropolitan Statistical Area
+47220   Vineland-Millville-Bridgeton, NJ Metropolitan Statistical Area
+47260   Virginia Beach-Norfolk-Newport News, VA-NC Metropolitan Statistical Area
+47300   Visalia-Porterville, CA Metropolitan Statistical Area
+47340   Wabash, IN Micropolitan Statistical Area
+47380   Waco, TX Metropolitan Statistical Area
+47420   Wahpeton, ND-MN Micropolitan Statistical Area
+47460   Walla Walla, WA Micropolitan Statistical Area
+47500   Walterboro, SC Micropolitan Statistical Area
+47540   Wapakoneta, OH Micropolitan Statistical Area
+47580   Warner Robins, GA Metropolitan Statistical Area
+47620   Warren, PA Micropolitan Statistical Area
+47660   Warrensburg, MO Micropolitan Statistical Area
+47700   Warsaw, IN Micropolitan Statistical Area
+47780   Washington, IN Micropolitan Statistical Area
+47820   Washington, NC Micropolitan Statistical Area
+47860   Washington, OH Micropolitan Statistical Area
+47900   Washington-Arlington-Alexandria, DC-VA-MD-WV Metropolitan Statistical Area
+47940   Waterloo-Cedar Falls, IA Metropolitan Statistical Area
+47980   Watertown, SD Micropolitan Statistical Area
+48020   Watertown-Fort Atkinson, WI Micropolitan Statistical Area
+48060   Watertown-Fort Drum, NY Micropolitan Statistical Area
+48100   Wauchula, FL Micropolitan Statistical Area
+48140   Wausau, WI Metropolitan Statistical Area
+48180   Waycross, GA Micropolitan Statistical Area
+48260   Weirton-Steubenville, WV-OH Metropolitan Statistical Area
+48300   Wenatchee, WA Metropolitan Statistical Area
+48340   West Helena, AR Micropolitan Statistical Area
+48460   West Plains, MO Micropolitan Statistical Area
+48500   West Point, MS Micropolitan Statistical Area
+48540   Wheeling, WV-OH Metropolitan Statistical Area
+48580   Whitewater, WI Micropolitan Statistical Area
+48620   Wichita, KS Metropolitan Statistical Area
+48660   Wichita Falls, TX Metropolitan Statistical Area
+48700   Williamsport, PA Metropolitan Statistical Area
+48740   Willimantic, CT Micropolitan Statistical Area
+48780   Williston, ND Micropolitan Statistical Area
+48820   Willmar, MN Micropolitan Statistical Area
+48900   Wilmington, NC Metropolitan Statistical Area
+48940   Wilmington, OH Micropolitan Statistical Area
+48980   Wilson, NC Micropolitan Statistical Area
+49020   Winchester, VA-WV Metropolitan Statistical Area
+49060   Winfield, KS Micropolitan Statistical Area
+49100   Winona, MN Micropolitan Statistical Area
+49180   Winston-Salem, NC Metropolitan Statistical Area
+49260   Woodward, OK Micropolitan Statistical Area
+49300   Wooster, OH Micropolitan Statistical Area
+49340   Worcester, MA Metropolitan Statistical Area
+49380   Worthington, MN Micropolitan Statistical Area
+49420   Yakima, WA Metropolitan Statistical Area
+49460   Yankton, SD Micropolitan Statistical Area
+49540   Yazoo City, MS Micropolitan Statistical Area
+49620   York-Hanover, PA Metropolitan Statistical Area
+49660   Youngstown-Warren-Boardman, OH-PA Metropolitan Statistical Area
+49700   Yuba City, CA Metropolitan Statistical Area
+49740   Yuma, AZ Metropolitan Statistical Area
+49780   Zanesville, OH Micropolitan Statistical Area
