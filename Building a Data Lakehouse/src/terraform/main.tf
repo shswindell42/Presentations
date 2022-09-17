@@ -3,7 +3,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.0.2"
+      version = "~> 3.23.0"
     }
   }
 
@@ -87,7 +87,53 @@ resource "azurerm_synapse_workspace" "main" {
     type = "SystemAssigned"
   }
 
+  github_repo {
+    account_name = "shswindell42"
+    branch_name = "main"
+    repository_name = "Presentations"
+    root_folder = "/Building a Data Lakehouse/src/synapse"
+  }
+
   tags = local.tags
 }
 
+resource "azurerm_synapse_firewall_rule" "azure_access" {
+  name = "AllowAllWindowsAzureIps"
+  start_ip_address = "0.0.0.0"
+  end_ip_address = "0.0.0.0"
+  synapse_workspace_id = azurerm_synapse_workspace.main.id
+}
 
+resource "azurerm_synapse_firewall_rule" "all_access" {
+  name = "AllowAll"
+  start_ip_address = "0.0.0.0"
+  end_ip_address = "255.255.255.255"
+  synapse_workspace_id = azurerm_synapse_workspace.main.id
+} 
+
+resource "azurerm_synapse_role_assignment" "example" {
+  synapse_workspace_id = azurerm_synapse_workspace.main.id
+  role_name            = "Synapse SQL Administrator"
+  principal_id         = var.aad_admin_object_id
+  depends_on = [
+    azurerm_synapse_firewall_rule.all_access
+  ]
+}
+
+resource "azurerm_synapse_spark_pool" "spark" {
+  name                 = "sbisparkdemo"
+  synapse_workspace_id = azurerm_synapse_workspace.main.id
+  node_size_family     = "MemoryOptimized"
+  node_size            = "Small"
+  cache_size           = 100
+  spark_version = "3.2"
+
+  auto_scale {
+    max_node_count = 10
+    min_node_count = 3
+  }
+
+  auto_pause {
+    delay_in_minutes = 15
+  }
+}
