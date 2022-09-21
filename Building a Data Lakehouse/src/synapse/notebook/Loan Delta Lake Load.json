@@ -18,7 +18,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "2f7cc1a2-bed9-4996-b37f-e7e1126ee3a6"
+				"spark.autotune.trackingId": "d58d47f0-1bd1-40ee-8e59-4691288657d9"
 			}
 		},
 		"metadata": {
@@ -52,6 +52,38 @@
 			{
 				"cell_type": "code",
 				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"loan_path = \"abfss://data@sbilakehousestorage.dfs.core.windows.net/bronze/freddiemac/loan/year=2021\""
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Process Loan Origination File\r\n",
+					"Reads a directory of loan origination files from the bronze layer, adds metadata, and merges it into the silver layer. This demonstrates schema-on-read and managing data using delta lake."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
 					"microsoft": {
 						"language": "python"
 					},
@@ -59,10 +91,24 @@
 				},
 				"source": [
 					"%%pyspark\r\n",
-					"df = spark.read.load('abfss://data@sbilakehousestorage.dfs.core.windows.net/bronze/freddiemac/loan/year=2021/historical_data_2021Q1.txt', format='text')\r\n",
+					"df = spark.read.load(loan_path, format='text')\r\n",
 					"display(df.limit(10))"
 				],
-				"execution_count": 1
+				"execution_count": 19
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"### Schema on Read\r\n",
+					"We define a schema below to read the loan origination file above. Here we are hard-coding the schema, in practice this meta data should be managed and a schema generated at runtime. That would allow for standardized processing of files. "
+				]
 			},
 			{
 				"cell_type": "code",
@@ -78,64 +124,208 @@
 					}
 				},
 				"source": [
-					"data = [\"202201,752\",\"202104,801\"]\r\n",
-					"dateFormat = \"yyyyMM\"\r\n",
-					"rdd = spark.sparkContext.parallelize(data)\r\n",
-					"df = spark.read.csv(rdd, \"TestData Date, Score Integer\", dateFormat=dateFormat, header=False)\r\n",
-					"df.show()"
-				],
-				"execution_count": 9
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"# create the schema structure to read the data from\r\n",
 					"from pyspark.sql.types import *\r\n",
 					"\r\n",
 					"schema = StructType([\r\n",
-					"    StructField('Credit Score', IntegerType(), True)\r\n",
-					"    ,StructField('First Payment Date', DateType(), True)\r\n",
-					"    ,StructField('First Time Homebuyer Flag', StringType(), True)\r\n",
-					"    ,StructField('Maturity Date', DateType(), True)\r\n",
-					"    ,StructField('Metropolitan Statistical Area (MSA) Or Metropolitan Division', IntegerType(), True)\r\n",
-					"    ,StructField('Mortgage Insurance Percentage (MI %)', DecimalType(), True)\r\n",
-					"    ,StructField('Number of Units', IntegerType(), True)\r\n",
-					"    ,StructField('Occupancy Status', StringType(), True)\r\n",
-					"    ,StructField('Original Combined Loan-to-Value (CLTV)', IntegerType(), True)\r\n",
-					"    ,StructField('Original Debt-to-Income (DTI) Ratio', IntegerType(), True)\r\n",
-					"    ,StructField('Original UPB', StringType(), True)\r\n",
-					"    ,StructField('Original Loan-to-Value (LTV)', StringType(), True)\r\n",
-					"    ,StructField('Original Interest Rate', StringType(), True)\r\n",
-					"    ,StructField('Channel', StringType(), True)\r\n",
-					"    ,StructField('Prepayment Penalty Mortgage (PPM) Flag', StringType(), True)\r\n",
-					"    ,StructField('Amortization Type (Formerly Product Type)', StringType(), True)\r\n",
-					"    ,StructField('Property State', StringType(), True)\r\n",
-					"    ,StructField('Property Type', StringType(), True)\r\n",
-					"    ,StructField('Postal Code', StringType(), True)\r\n",
-					"    ,StructField('Loan Sequence Number', StringType(), True)\r\n",
-					"    ,StructField('Loan Purpose', StringType(), True)\r\n",
-					"    ,StructField('Original Loan Term', StringType(), True)\r\n",
-					"    ,StructField('Number of Borrowers', StringType(), True)\r\n",
-					"    ,StructField('Seller Name', StringType(), True)\r\n",
-					"    ,StructField('Servicer Name', StringType(), True)\r\n",
-					"    ,StructField('Super Conforming Flag', StringType(), True)\r\n",
-					"    ,StructField('Pre-HARP Loan Sequence Number', StringType(), True)\r\n",
-					"    ,StructField('Program Indicator', StringType(), True)\r\n",
-					"    ,StructField('HARP Indicator', StringType(), True)\r\n",
-					"    ,StructField('Property Valuation Method', StringType(), True)\r\n",
-					"    ,StructField('Interest Only (I/O) Indicator', StringType(), True)\r\n",
-					"])\r\n",
+					"    StructField('credit_score', IntegerType(), True)\r\n",
+					"    ,StructField('first_payment_date', DateType(), True)\r\n",
+					"    ,StructField('first_time_homebuyer_flag', StringType(), True)\r\n",
+					"    ,StructField('maturity_date', DateType(), True)\r\n",
+					"    ,StructField('metropolitan_statistical_area', IntegerType(), True)\r\n",
+					"    ,StructField('mortgage_insurance_percentage', DecimalType(), True)\r\n",
+					"    ,StructField('number_of_units', IntegerType(), True)\r\n",
+					"    ,StructField('occupancy_status', StringType(), True)\r\n",
+					"    ,StructField('original_combined_loan_to_value', IntegerType(), True)\r\n",
+					"    ,StructField('original_debt_to_income_ratio', IntegerType(), True)\r\n",
+					"    ,StructField('original_upb', LongType(), True)\r\n",
+					"    ,StructField('original_loan_to_value', IntegerType(), True)\r\n",
+					"    ,StructField('original_interest_rate', DecimalType(6,3), True)\r\n",
+					"    ,StructField('channel', StringType(), True)\r\n",
+					"    ,StructField('prepayment_penalty_mortgage_flag', StringType(), True)\r\n",
+					"    ,StructField('amortization_type', StringType(), True)\r\n",
+					"    ,StructField('property_state', StringType(), True)\r\n",
+					"    ,StructField('property_type', StringType(), True)\r\n",
+					"    ,StructField('postal_code', StringType(), True)\r\n",
+					"    ,StructField('loan_sequence_number', StringType(), True)\r\n",
+					"    ,StructField('loan_purpose', StringType(), True)\r\n",
+					"    ,StructField('original_loan_term', IntegerType(), True)\r\n",
+					"    ,StructField('number_of_borrowers', IntegerType(), True)\r\n",
+					"    ,StructField('seller_name', StringType(), True)\r\n",
+					"    ,StructField('servicer_name', StringType(), True)\r\n",
+					"    ,StructField('super_conforming_flag', StringType(), True)\r\n",
+					"    ,StructField('pre_harp_loan_sequence_number', StringType(), True)\r\n",
+					"    ,StructField('program_indicator', StringType(), True)\r\n",
+					"    ,StructField('harp_indicator', StringType(), True)\r\n",
+					"    ,StructField('property_valuation_method', IntegerType(), True)\r\n",
+					"    ,StructField('interest_only_indicator', StringType(), True)\r\n",
+					"])"
+				],
+				"execution_count": 20
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Read the data using the schema specified above. In practice, additional code should be written to handle malformed rows. One option would be to use the `columnNameOfCorruptRecord` property, to use it an additional column should be added to the schema to capture the bad row as a string. The column name would be provided as the `columnNameOfCorruptRecord`"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"loan_df = spark.read.csv(path=loan_path\r\n",
+					"                        ,sep=\"|\"\r\n",
+					"                        ,header=False\r\n",
+					"                        ,schema=schema\r\n",
+					"                        ,dateFormat=\"yyyyMM\")\r\n",
+					"display(loan_df)"
+				],
+				"execution_count": 21
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Add metadata columns for:\r\n",
+					"- The file we read the data from\r\n",
+					"- When we read the data\r\n",
+					"- row hash\r\n",
+					""
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"from pyspark.sql.functions import current_date, input_file_name, concat_ws, xxhash64, array\r\n",
+					"loans_df_processed = loan_df.withColumn(\"processed_date\", current_date()) \\\r\n",
+					"                            .withColumn(\"source_file\", input_file_name()) \\\r\n",
+					"                            .withColumn(\"row_hash\", xxhash64(concat_ws('|', array(loan_df.columns))))\r\n",
+					"display(loans_df_processed.select([\"loan_sequence_number\", \"processed_date\", \"source_file\", \"row_hash\"]))"
+				],
+				"execution_count": 23
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"### Write to Delta Lake\r\n",
+					"Write the data to the silver layer, data in this layer is stored using delta lake. \r\n",
+					"\r\n",
+					"The load is performed using a merge statement, this allows us to reload the same data and update it if necessary.\r\n",
+					"\r\n",
+					"After loading we will inspect the delta lake table to review results"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from delta.tables import *\r\n",
+					"\r\n",
+					"delta_path = \"abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan\"\r\n",
+					"\r\n",
+					"if not DeltaTable.isDeltaTable(spark, delta_path):\r\n",
+					"    loans_df_processed.write.format(\"delta\").save(delta_path)\r\n",
+					"else:\r\n",
+					"    silver_loan_data = DeltaTable.forPath(spark, delta_path)\r\n",
+					"\r\n",
+					"    silver_loan_data.alias(\"target\").merge(\r\n",
+					"        loans_df_processed.alias(\"source\")\r\n",
+					"        ,\"target.loan_sequence_number = source.loan_sequence_number\"\r\n",
+					"    ) \\\r\n",
+					"    .whenMatchedUpdateAll(\"target.row_hash != source.row_hash\") \\\r\n",
+					"    .whenNotMatchedInsertAll() \\\r\n",
+					"    .execute()"
+				],
+				"execution_count": 24
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"import os\r\n",
+					"delta_log_path = os.path.join(delta_path, '_delta_log')\r\n",
+					"log_df = spark.read.text(delta_log_path)\r\n",
+					"display(log_df)"
+				],
+				"execution_count": 27
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
 					""
 				],
 				"execution_count": null
