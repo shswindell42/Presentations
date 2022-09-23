@@ -1,0 +1,216 @@
+{
+	"name": "Loan Service Delta Lake Load",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sbisparkdemo",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "e19c07de-e5d3-4551-ad70-662095c7cc68"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/07d94183-4c00-462f-adc3-8118aa879dbb/resourceGroups/data-lakehouse-demo/providers/Microsoft.Synapse/workspaces/sbi-synapse-demo/bigDataPools/sbisparkdemo",
+				"name": "sbisparkdemo",
+				"type": "Spark",
+				"endpoint": "https://sbi-synapse-demo.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sbisparkdemo",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"loan_path = \"abfss://data@sbilakehousestorage.dfs.core.windows.net/bronze/freddiemac/performance/year=2021/\""
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"sample_df = spark.read.text(loan_path)\r\n",
+					"display(sample_df.limit(10))"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from pyspark.sql.types import *\r\n",
+					"\r\n",
+					"schema = StructType([\r\n",
+					"    StructField('loan_sequence_number', StringType(), True)\r\n",
+					"    ,StructField('monthly_reporting_period', DateType(), True)\r\n",
+					"    ,StructField('current_actual_upb', DecimalType(12,2), True)\r\n",
+					"    ,StructField('current_loan_delinquency_status', StringType(), True)\r\n",
+					"    ,StructField('loan_age', IntegerType(), True)\r\n",
+					"    ,StructField('remaining_months_to_legal_maturity', IntegerType(), True)\r\n",
+					"    ,StructField('defect_settlement_date', DateType(), True)\r\n",
+					"    ,StructField('modification_flag', StringType(), True)\r\n",
+					"    ,StructField('zero_balance_code', IntegerType(), True)\r\n",
+					"    ,StructField('zero_balance_effective_date', DateType(), True)\r\n",
+					"    ,StructField('current_interest_rate', DecimalType(8,3), True)\r\n",
+					"    ,StructField('current_deferred_upb', LongType(), True)\r\n",
+					"    ,StructField('due_date_of_last_paid_installment', LongType(), True)\r\n",
+					"    ,StructField('mi_recoveries', DecimalType(12,2), True)\r\n",
+					"    ,StructField('net_sales_proceeds', StringType(), True)\r\n",
+					"    ,StructField('non_mi_recoveries', DecimalType(12,2), True)\r\n",
+					"    ,StructField('expenses', DecimalType(12,2), True)\r\n",
+					"    ,StructField('legal_costs', DecimalType(12,2), True)\r\n",
+					"    ,StructField('maintenance_and_preservation_costs', DecimalType(12,2), True)\r\n",
+					"    ,StructField('taxes_and_insurance', DecimalType(12,2), True)\r\n",
+					"    ,StructField('miscellaneous_expenses', DecimalType(12,2), True)\r\n",
+					"    ,StructField('actual_loss_calculation', DecimalType(12,2), True)\r\n",
+					"    ,StructField('modification_cost', DecimalType(12,2), True)\r\n",
+					"    ,StructField('step_modification_flag', StringType(), True)\r\n",
+					"    ,StructField('deferred_payment_plan', StringType(), True)\r\n",
+					"    ,StructField('estimated_loan_to_value', IntegerType(), True)\r\n",
+					"    ,StructField('zero_balance_removal_upb', DecimalType(12,2), True)\r\n",
+					"    ,StructField('delinquent_accrued_interest', DecimalType(12,2), True)\r\n",
+					"    ,StructField('delinquency_due_to_disaster', StringType(), True)\r\n",
+					"    ,StructField('borrower_assistance_status_code', StringType(), True)\r\n",
+					"    ,StructField('current_month_modification_cost', DecimalType(12,2), True)\r\n",
+					"    ,StructField('interest_bearing_upb', DecimalType(12,2), True)\r\n",
+					"])\r\n",
+					"\r\n",
+					"seperator = \"|\"\r\n",
+					""
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"loan_performance_df = spark.read.csv(path=loan_path\r\n",
+					"                                    ,schema=schema\r\n",
+					"                                    ,header=False\r\n",
+					"                                    ,sep=seperator\r\n",
+					"                                    ,dateFormat=\"yyyyMM\")\r\n",
+					"display(loan_performance_df)"
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"from pyspark.sql.functions import current_date, input_file_name, concat_ws, xxhash64, array\r\n",
+					"loan_performance_df_processed = loan_performance_df.withColumn(\"processed_date\", current_date()) \\\r\n",
+					"                            .withColumn(\"source_file\", input_file_name()) \\\r\n",
+					"                            .withColumn(\"row_hash\", xxhash64(concat_ws('|', array(loan_performance_df.columns))))\r\n",
+					"display(loan_performance_df_processed.select([\"loan_sequence_number\", \"processed_date\", \"source_file\", \"row_hash\"]))"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from delta.tables import *\r\n",
+					"\r\n",
+					"delta_path = \"abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan_performance\"\r\n",
+					"\r\n",
+					"if not DeltaTable.isDeltaTable(spark, delta_path):\r\n",
+					"    loan_performance_df_processed.write.format(\"delta\").save(delta_path)\r\n",
+					"else:\r\n",
+					"    silver_loan_data = DeltaTable.forPath(spark, delta_path)\r\n",
+					"\r\n",
+					"    silver_loan_data.alias(\"target\").merge(\r\n",
+					"        loan_performance_df_processed.alias(\"source\")\r\n",
+					"        ,\"target.loan_sequence_number = source.loan_sequence_number and target.monthly_reporting_period = source.monthly_reporting_period\"\r\n",
+					"    ) \\\r\n",
+					"    .whenMatchedUpdateAll(\"target.row_hash != source.row_hash\") \\\r\n",
+					"    .whenNotMatchedInsertAll() \\\r\n",
+					"    .execute()"
+				],
+				"execution_count": 9
+			}
+		]
+	}
+}
