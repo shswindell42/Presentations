@@ -1,0 +1,17 @@
+{
+	"name": "Create FreddicMac Database",
+	"properties": {
+		"content": {
+			"query": "\nCREATE DATABASE FreddieMac\nGO\n\nUSE FreddieMac\nGO\n\nCREATE VIEW loans\nAS\nSELECT *\nFROM OPENROWSET(\n    BULK 'abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan/',\n    FORMAT = 'DELTA'\n) as loans\nGO\n\nCREATE VIEW loan_performance\nAS\nSELECT *\nFROM OPENROWSET(\n    BULK 'abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan_performance/',\n    FORMAT = 'DELTA'\n) as loans\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
