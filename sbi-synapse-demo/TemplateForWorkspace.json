@@ -1,0 +1,654 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"type": "string",
+			"metadata": "Workspace name",
+			"defaultValue": "sbi-synapse-demo"
+		}
+	},
+	"variables": {
+		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('workspaceName'), '/Loan Delta Lake Load')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Parses loan data from bronze layer, and merges into silver layer",
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "sbisparkdemo",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "41c2b3f9-33c0-435c-a45c-d9ca8d4538c3"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/07d94183-4c00-462f-adc3-8118aa879dbb/resourceGroups/data-lakehouse-demo/providers/Microsoft.Synapse/workspaces/sbi-synapse-demo/bigDataPools/sbisparkdemo",
+						"name": "sbisparkdemo",
+						"type": "Spark",
+						"endpoint": "https://sbi-synapse-demo.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sbisparkdemo",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.2",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"loan_path = \"abfss://data@sbilakehousestorage.dfs.core.windows.net/bronze/freddiemac/loan/year=2021\""
+						],
+						"outputs": [],
+						"execution_count": 18
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Process Loan Origination File\r\n",
+							"Reads a directory of loan origination files from the bronze layer, adds metadata, and merges it into the silver layer. This demonstrates schema-on-read and managing data using delta lake."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"df = spark.read.load(loan_path, format='text')\r\n",
+							"display(df.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": 19
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"### Schema on Read\r\n",
+							"We define a schema below to read the loan origination file above. Here we are hard-coding the schema, in practice this meta data should be managed and a schema generated at runtime. That would allow for standardized processing of files. "
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from pyspark.sql.types import *\r\n",
+							"\r\n",
+							"schema = StructType([\r\n",
+							"    StructField('credit_score', IntegerType(), True)\r\n",
+							"    ,StructField('first_payment_date', DateType(), True)\r\n",
+							"    ,StructField('first_time_homebuyer_flag', StringType(), True)\r\n",
+							"    ,StructField('maturity_date', DateType(), True)\r\n",
+							"    ,StructField('metropolitan_statistical_area', IntegerType(), True)\r\n",
+							"    ,StructField('mortgage_insurance_percentage', DecimalType(), True)\r\n",
+							"    ,StructField('number_of_units', IntegerType(), True)\r\n",
+							"    ,StructField('occupancy_status', StringType(), True)\r\n",
+							"    ,StructField('original_combined_loan_to_value', IntegerType(), True)\r\n",
+							"    ,StructField('original_debt_to_income_ratio', IntegerType(), True)\r\n",
+							"    ,StructField('original_upb', LongType(), True)\r\n",
+							"    ,StructField('original_loan_to_value', IntegerType(), True)\r\n",
+							"    ,StructField('original_interest_rate', DecimalType(6,3), True)\r\n",
+							"    ,StructField('channel', StringType(), True)\r\n",
+							"    ,StructField('prepayment_penalty_mortgage_flag', StringType(), True)\r\n",
+							"    ,StructField('amortization_type', StringType(), True)\r\n",
+							"    ,StructField('property_state', StringType(), True)\r\n",
+							"    ,StructField('property_type', StringType(), True)\r\n",
+							"    ,StructField('postal_code', StringType(), True)\r\n",
+							"    ,StructField('loan_sequence_number', StringType(), True)\r\n",
+							"    ,StructField('loan_purpose', StringType(), True)\r\n",
+							"    ,StructField('original_loan_term', IntegerType(), True)\r\n",
+							"    ,StructField('number_of_borrowers', IntegerType(), True)\r\n",
+							"    ,StructField('seller_name', StringType(), True)\r\n",
+							"    ,StructField('servicer_name', StringType(), True)\r\n",
+							"    ,StructField('super_conforming_flag', StringType(), True)\r\n",
+							"    ,StructField('pre_harp_loan_sequence_number', StringType(), True)\r\n",
+							"    ,StructField('program_indicator', StringType(), True)\r\n",
+							"    ,StructField('harp_indicator', StringType(), True)\r\n",
+							"    ,StructField('property_valuation_method', IntegerType(), True)\r\n",
+							"    ,StructField('interest_only_indicator', StringType(), True)\r\n",
+							"])"
+						],
+						"outputs": [],
+						"execution_count": 20
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Read the data using the schema specified above. In practice, additional code should be written to handle malformed rows. One option would be to use the `columnNameOfCorruptRecord` property, to use it an additional column should be added to the schema to capture the bad row as a string. The column name would be provided as the `columnNameOfCorruptRecord`"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"loan_df = spark.read.csv(path=loan_path\r\n",
+							"                        ,sep=\"|\"\r\n",
+							"                        ,header=False\r\n",
+							"                        ,schema=schema\r\n",
+							"                        ,dateFormat=\"yyyyMM\")\r\n",
+							"display(loan_df)"
+						],
+						"outputs": [],
+						"execution_count": 21
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Add metadata columns for:\r\n",
+							"- The file we read the data from\r\n",
+							"- When we read the data\r\n",
+							"- row hash\r\n",
+							""
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"from pyspark.sql.functions import current_date, input_file_name, concat_ws, xxhash64, array\r\n",
+							"loans_df_processed = loan_df.withColumn(\"processed_date\", current_date()) \\\r\n",
+							"                            .withColumn(\"source_file\", input_file_name()) \\\r\n",
+							"                            .withColumn(\"row_hash\", xxhash64(concat_ws('|', array(loan_df.columns))))\r\n",
+							"display(loans_df_processed.select([\"loan_sequence_number\", \"processed_date\", \"source_file\", \"row_hash\"]))"
+						],
+						"outputs": [],
+						"execution_count": 23
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"### Write to Delta Lake\r\n",
+							"Write the data to the silver layer, data in this layer is stored using delta lake. \r\n",
+							"\r\n",
+							"The load is performed using a merge statement, this allows us to reload the same data and update it if necessary.\r\n",
+							"\r\n",
+							"After loading we will inspect the delta lake table to review results"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from delta.tables import *\r\n",
+							"\r\n",
+							"delta_path = \"abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan\"\r\n",
+							"\r\n",
+							"if not DeltaTable.isDeltaTable(spark, delta_path):\r\n",
+							"    loans_df_processed.write.format(\"delta\").save(delta_path)\r\n",
+							"else:\r\n",
+							"    silver_loan_data = DeltaTable.forPath(spark, delta_path)\r\n",
+							"\r\n",
+							"    silver_loan_data.alias(\"target\").merge(\r\n",
+							"        loans_df_processed.alias(\"source\")\r\n",
+							"        ,\"target.loan_sequence_number = source.loan_sequence_number\"\r\n",
+							"    ) \\\r\n",
+							"    .whenMatchedUpdateAll(\"target.row_hash != source.row_hash\") \\\r\n",
+							"    .whenNotMatchedInsertAll() \\\r\n",
+							"    .execute()"
+						],
+						"outputs": [],
+						"execution_count": 24
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"import os\r\n",
+							"delta_log_path = os.path.join(delta_path, '_delta_log')\r\n",
+							"log_df = spark.read.text(delta_log_path)\r\n",
+							"display(log_df)"
+						],
+						"outputs": [],
+						"execution_count": 27
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/sbisparkdemo')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"autoPause": {
+					"enabled": true,
+					"delayInMinutes": 15
+				},
+				"autoScale": {
+					"enabled": true,
+					"maxNodeCount": 10,
+					"minNodeCount": 3
+				},
+				"nodeCount": 0,
+				"nodeSize": "Small",
+				"nodeSizeFamily": "MemoryOptimized",
+				"sparkVersion": "3.2",
+				"isComputeIsolationEnabled": false,
+				"sessionLevelPackagesEnabled": false,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "eastus2"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Loan Service Delta Lake Load')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "sbisparkdemo",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "455be1ac-dbd5-4cfd-a373-e4c30ffb179a"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/07d94183-4c00-462f-adc3-8118aa879dbb/resourceGroups/data-lakehouse-demo/providers/Microsoft.Synapse/workspaces/sbi-synapse-demo/bigDataPools/sbisparkdemo",
+						"name": "sbisparkdemo",
+						"type": "Spark",
+						"endpoint": "https://sbi-synapse-demo.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sbisparkdemo",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.2",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							"loan_path = \"abfss://data@sbilakehousestorage.dfs.core.windows.net/bronze/freddiemac/performance/year=2021/\""
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"sample_df = spark.read.text(loan_path)\r\n",
+							"display(sample_df.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from pyspark.sql.types import *\r\n",
+							"\r\n",
+							"schema = StructType([\r\n",
+							"    StructField('loan_sequence_number', StringType(), True)\r\n",
+							"    ,StructField('monthly_reporting_period', DateType(), True)\r\n",
+							"    ,StructField('current_actual_upb', DecimalType(12,2), True)\r\n",
+							"    ,StructField('current_loan_delinquency_status', StringType(), True)\r\n",
+							"    ,StructField('loan_age', IntegerType(), True)\r\n",
+							"    ,StructField('remaining_months_to_legal_maturity', IntegerType(), True)\r\n",
+							"    ,StructField('defect_settlement_date', DateType(), True)\r\n",
+							"    ,StructField('modification_flag', StringType(), True)\r\n",
+							"    ,StructField('zero_balance_code', IntegerType(), True)\r\n",
+							"    ,StructField('zero_balance_effective_date', DateType(), True)\r\n",
+							"    ,StructField('current_interest_rate', DecimalType(8,3), True)\r\n",
+							"    ,StructField('current_deferred_upb', LongType(), True)\r\n",
+							"    ,StructField('due_date_of_last_paid_installment', LongType(), True)\r\n",
+							"    ,StructField('mi_recoveries', DecimalType(12,2), True)\r\n",
+							"    ,StructField('net_sales_proceeds', StringType(), True)\r\n",
+							"    ,StructField('non_mi_recoveries', DecimalType(12,2), True)\r\n",
+							"    ,StructField('expenses', DecimalType(12,2), True)\r\n",
+							"    ,StructField('legal_costs', DecimalType(12,2), True)\r\n",
+							"    ,StructField('maintenance_and_preservation_costs', DecimalType(12,2), True)\r\n",
+							"    ,StructField('taxes_and_insurance', DecimalType(12,2), True)\r\n",
+							"    ,StructField('miscellaneous_expenses', DecimalType(12,2), True)\r\n",
+							"    ,StructField('actual_loss_calculation', DecimalType(12,2), True)\r\n",
+							"    ,StructField('modification_cost', DecimalType(12,2), True)\r\n",
+							"    ,StructField('step_modification_flag', StringType(), True)\r\n",
+							"    ,StructField('deferred_payment_plan', StringType(), True)\r\n",
+							"    ,StructField('estimated_loan_to_value', IntegerType(), True)\r\n",
+							"    ,StructField('zero_balance_removal_upb', DecimalType(12,2), True)\r\n",
+							"    ,StructField('delinquent_accrued_interest', DecimalType(12,2), True)\r\n",
+							"    ,StructField('delinquency_due_to_disaster', StringType(), True)\r\n",
+							"    ,StructField('borrower_assistance_status_code', StringType(), True)\r\n",
+							"    ,StructField('current_month_modification_cost', DecimalType(12,2), True)\r\n",
+							"    ,StructField('interest_bearing_upb', DecimalType(12,2), True)\r\n",
+							"])\r\n",
+							"\r\n",
+							"seperator = \"|\"\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"loan_performance_df = spark.read.csv(path=loan_path\r\n",
+							"                                    ,schema=schema\r\n",
+							"                                    ,header=False\r\n",
+							"                                    ,sep=seperator\r\n",
+							"                                    ,dateFormat=\"yyyyMM\")\r\n",
+							"display(loan_performance_df)"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"from pyspark.sql.functions import current_date, input_file_name, concat_ws, xxhash64, array\r\n",
+							"loan_performance_df_processed = loan_performance_df.withColumn(\"processed_date\", current_date()) \\\r\n",
+							"                            .withColumn(\"source_file\", input_file_name()) \\\r\n",
+							"                            .withColumn(\"row_hash\", xxhash64(concat_ws('|', array(loan_performance_df.columns))))\r\n",
+							"display(loan_performance_df_processed.select([\"loan_sequence_number\", \"processed_date\", \"source_file\", \"row_hash\"]))"
+						],
+						"outputs": [],
+						"execution_count": 8
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from delta.tables import *\r\n",
+							"\r\n",
+							"delta_path = \"abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan_performance\"\r\n",
+							"\r\n",
+							"if not DeltaTable.isDeltaTable(spark, delta_path):\r\n",
+							"    loan_performance_df_processed.write.format(\"delta\").save(delta_path)\r\n",
+							"else:\r\n",
+							"    silver_loan_data = DeltaTable.forPath(spark, delta_path)\r\n",
+							"\r\n",
+							"    silver_loan_data.alias(\"target\").merge(\r\n",
+							"        loan_performance_df_processed.alias(\"source\")\r\n",
+							"        ,\"target.loan_sequence_number = source.loan_sequence_number and target.monthly_reporting_period = source.monthly_reporting_period\"\r\n",
+							"    ) \\\r\n",
+							"    .whenMatchedUpdateAll(\"target.row_hash != source.row_hash\") \\\r\n",
+							"    .whenNotMatchedInsertAll() \\\r\n",
+							"    .execute()"
+						],
+						"outputs": [],
+						"execution_count": 9
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Query Delta Lake Table')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "SELECT *\nFROM OPENROWSET(\n    BULK 'abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan/',\n    FORMAT = 'DELTA'\n) as loans",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "master",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Create FreddicMac Database')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "\nCREATE DATABASE FreddieMac\nGO\n\nUSE FreddieMac\nGO\n\nCREATE VIEW loans\nAS\nSELECT *\nFROM OPENROWSET(\n    BULK 'abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan/',\n    FORMAT = 'DELTA'\n) as loans\nGO\n\nCREATE VIEW loan_performance\nAS\nSELECT *\nFROM OPENROWSET(\n    BULK 'abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan_performance/',\n    FORMAT = 'DELTA'\n) as loans\nGO",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "FreddieMac",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Aggregate Queries')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "select LEFT(loan_sequence_number, 5) as origination_quarter\n\t,case when credit_score >= 800 THEN '1 Exceptional'\n\t\twhen credit_score between 740 and 799 then '2 Very Good'\n\t\twhen credit_score between 670 and 739 then '3 Good'\n\t\twhen credit_score between 580 and 669 then '4 Fair'\n\t\twhen credit_score <= 579 then '5 Poor'\n\t\tend as credit_range\n\t,AVG(original_interest_rate) as average_interest_rate\n\t,count(*) as number_loans\nfrom loans\ngroup by case when credit_score >= 800 THEN '1 Exceptional'\n\t\twhen credit_score between 740 and 799 then '2 Very Good'\n\t\twhen credit_score between 670 and 739 then '3 Good'\n\t\twhen credit_score between 580 and 669 then '4 Fair'\n\t\twhen credit_score <= 579 then '5 Poor'\n\t\tend\n\t,LEFT(loan_sequence_number, 5)\norder by origination_quarter\n\t,credit_range\n\n-- percentage of delinquent loans\nselect LEFT(l.loan_sequence_number, 5) as origination_quarter\n\t,case when credit_score >= 800 THEN '1 Exceptional'\n\t\twhen credit_score between 740 and 799 then '2 Very Good'\n\t\twhen credit_score between 670 and 739 then '3 Good'\n\t\twhen credit_score between 580 and 669 then '4 Fair'\n\t\twhen credit_score <= 579 then '5 Poor'\n\t\tend as credit_range\n\t,sum(case when lp.current_loan_delinquency_status in ('XX', '0', '   ') then 0 else 1 end) as number_delinquent_loans\n\t,count(distinct l.loan_sequence_number) as number_loans\n\t,sum(case when lp.current_loan_delinquency_status in ('XX', '0', '   ') then 0 else 1 end) / count(distinct l.loan_sequence_number) as percentage_delinquent_loans\nfrom loans l\n\tinner join [dbo].[loan_performance] lp\n\t\ton l.loan_sequence_number = lp.loan_sequence_number\ngroup by case when credit_score >= 800 THEN '1 Exceptional'\n\t\twhen credit_score between 740 and 799 then '2 Very Good'\n\t\twhen credit_score between 670 and 739 then '3 Good'\n\t\twhen credit_score between 580 and 669 then '4 Fair'\n\t\twhen credit_score <= 579 then '5 Poor'\n\t\tend\n\t,LEFT(l.loan_sequence_number, 5)\norder by origination_quarter\n\t,credit_range",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "master",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		}
+	]
+}
