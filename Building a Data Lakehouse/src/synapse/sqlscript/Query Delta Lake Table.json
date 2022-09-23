@@ -1,0 +1,17 @@
+{
+	"name": "Query Delta Lake Table",
+	"properties": {
+		"content": {
+			"query": "SELECT *\nFROM OPENROWSET(\n    BULK 'abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan/',\n    FORMAT = 'DELTA'\n) as loans",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
