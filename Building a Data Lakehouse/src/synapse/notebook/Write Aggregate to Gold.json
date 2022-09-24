@@ -1,0 +1,142 @@
+{
+	"name": "Write Aggregate to Gold",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sbisparkdemo",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "77297a09-1c6b-4b26-aeb9-89dfb1047c31"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/07d94183-4c00-462f-adc3-8118aa879dbb/resourceGroups/data-lakehouse-demo/providers/Microsoft.Synapse/workspaces/sbi-synapse-demo/bigDataPools/sbisparkdemo",
+				"name": "sbisparkdemo",
+				"type": "Spark",
+				"endpoint": "https://sbi-synapse-demo.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sbisparkdemo",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"loan_df = spark.read.load(path=\"abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan\", format=\"delta\")\r\n",
+					"loan_performance_df = spark.read.load(path=\"abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan_performance\", format=\"delta\")"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"loan_df.createOrReplaceTempView(\"loan\")\r\n",
+					"loan_performance_df.createOrReplaceTempView(\"loan_performance\")"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"agg_data = spark.sql(\"\"\"\r\n",
+					"select LEFT(l.loan_sequence_number, 5) as origination_quarter\r\n",
+					"\t,case when credit_score >= 800 THEN '1 Exceptional'\r\n",
+					"\t\twhen credit_score between 740 and 799 then '2 Very Good'\r\n",
+					"\t\twhen credit_score between 670 and 739 then '3 Good'\r\n",
+					"\t\twhen credit_score between 580 and 669 then '4 Fair'\r\n",
+					"\t\twhen credit_score <= 579 then '5 Poor'\r\n",
+					"\t\tend as credit_range\r\n",
+					"\t,sum(case when lp.current_loan_delinquency_status in ('XX', '0', '   ') then 0 else 1 end) as number_delinquent_loans\r\n",
+					"\t,count(distinct l.loan_sequence_number) as number_loans\r\n",
+					"\t,sum(case when lp.current_loan_delinquency_status in ('XX', '0', '   ') then 0 else 1 end) / count(distinct l.loan_sequence_number) as percentage_delinquent_loans\r\n",
+					"from loan l\r\n",
+					"\tinner join loan_performance lp\r\n",
+					"\t\ton l.loan_sequence_number = lp.loan_sequence_number\r\n",
+					"group by case when credit_score >= 800 THEN '1 Exceptional'\r\n",
+					"\t\twhen credit_score between 740 and 799 then '2 Very Good'\r\n",
+					"\t\twhen credit_score between 670 and 739 then '3 Good'\r\n",
+					"\t\twhen credit_score between 580 and 669 then '4 Fair'\r\n",
+					"\t\twhen credit_score <= 579 then '5 Poor'\r\n",
+					"\t\tend\r\n",
+					"\t,LEFT(l.loan_sequence_number, 5)\r\n",
+					"order by origination_quarter\r\n",
+					"\t,credit_range\r\n",
+					"\"\"\")\r\n",
+					"\r\n",
+					"display(agg_data)"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"agg_data.write.mode(\"overwrite\").parquet(\"abfss://data@sbilakehousestorage.dfs.core.windows.net/gold/freddiemac/agg/delinquency_by_credit\")"
+				],
+				"execution_count": 6
+			}
+		]
+	}
+}
