@@ -1,0 +1,361 @@
+{
+	"name": "Loan Delta Lake Load SQL Edition",
+	"properties": {
+		"description": "Parses loan data from bronze layer, and merges into silver layer",
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sbisparkdemo",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "b4d71ab0-8847-4d41-a61c-ef4d2b92efad"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "sql"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/07d94183-4c00-462f-adc3-8118aa879dbb/resourceGroups/data-lakehouse-demo/providers/Microsoft.Synapse/workspaces/sbi-synapse-demo/bigDataPools/sbisparkdemo",
+				"name": "sbisparkdemo",
+				"type": "Spark",
+				"endpoint": "https://sbi-synapse-demo.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sbisparkdemo",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.2",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"# Process Loan Origination File\r\n",
+					"Reads a directory of loan origination files from the bronze layer, adds metadata, and merges it into the silver layer. This demonstrates schema-on-read and managing data using delta lake."
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"collapsed": false
+				},
+				"source": [
+					"SELECT *\r\n",
+					"FROM text.`abfss://data@sbilakehousestorage.dfs.core.windows.net/bronze/freddiemac/loan/year=2021`\r\n",
+					"LIMIT 10"
+				],
+				"execution_count": 25
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"### Schema on Read\r\n",
+					"We create a temporary view which defines a schema for the dataset. We read the data as a CSV using | for the separator, yyyyMM for the date format, and without headers. "
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"DROP VIEW IF EXISTS loans;\r\n",
+					"\r\n",
+					"CREATE TEMPORARY VIEW loans\r\n",
+					"(\r\n",
+					"    credit_score Integer, \r\n",
+					"    first_payment_date Date, \r\n",
+					"    first_time_homebuyer_flag String, \r\n",
+					"    maturity_date Date, \r\n",
+					"    metropolitan_statistical_area Integer, \r\n",
+					"    mortgage_insurance_percentage Integer, \r\n",
+					"    number_of_units Integer, \r\n",
+					"    occupancy_status String, \r\n",
+					"    original_combined_loan_to_value Integer, \r\n",
+					"    original_debt_to_income_ratio Integer, \r\n",
+					"    original_upb Long, \r\n",
+					"    original_loan_to_value Integer, \r\n",
+					"    original_interest_rate Decimal(6,3), \r\n",
+					"    channel String, \r\n",
+					"    prepayment_penalty_mortgage_flag String, \r\n",
+					"    amortization_type String, \r\n",
+					"    property_state String, \r\n",
+					"    property_type String, \r\n",
+					"    postal_code String, \r\n",
+					"    loan_sequence_number String, \r\n",
+					"    loan_purpose String, \r\n",
+					"    original_loan_term Integer, \r\n",
+					"    number_of_borrowers Integer, \r\n",
+					"    seller_name String, \r\n",
+					"    servicer_name String, \r\n",
+					"    super_conforming_flag String, \r\n",
+					"    pre_harp_loan_sequence_number String, \r\n",
+					"    program_indicator String, \r\n",
+					"    harp_indicator String, \r\n",
+					"    property_valuation_method Integer, \r\n",
+					"    interest_only_indicator String\r\n",
+					")\r\n",
+					"USING CSV\r\n",
+					"OPTIONS (\r\n",
+					"    path \"abfss://data@sbilakehousestorage.dfs.core.windows.net/bronze/freddiemac/loan/year=2021\"\r\n",
+					"    ,header \"false\"\r\n",
+					"    ,sep \"|\"\r\n",
+					"    ,dateFormat \"yyyyMM\"\r\n",
+					");\r\n",
+					"\r\n",
+					"SELECT *\r\n",
+					"FROM loans\r\n",
+					"LIMIT 100;"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"Add metadata columns for:\r\n",
+					"- The file we read the data from\r\n",
+					"- When we read the data\r\n",
+					"- row hash\r\n",
+					"\r\n",
+					"This is done via creating a new view for the data, no need to physically read the data into a table"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"DROP VIEW IF EXISTS loans_enriched;\r\n",
+					"\r\n",
+					"CREATE TEMPORARY VIEW loans_enriched\r\n",
+					"AS\r\n",
+					"SELECT *\r\n",
+					"    ,current_date as processed_date\r\n",
+					"    ,input_file_name() as source_file\r\n",
+					"    ,xxhash64(concat_ws('|', credit_score,\r\n",
+					"                                first_payment_date,\r\n",
+					"                                first_time_homebuyer_flag,\r\n",
+					"                                maturity_date,\r\n",
+					"                                metropolitan_statistical_area,\r\n",
+					"                                mortgage_insurance_percentage,\r\n",
+					"                                number_of_units,\r\n",
+					"                                occupancy_status,\r\n",
+					"                                original_combined_loan_to_value,\r\n",
+					"                                original_debt_to_income_ratio,\r\n",
+					"                                original_upb,\r\n",
+					"                                original_loan_to_value,\r\n",
+					"                                original_interest_rate,\r\n",
+					"                                channel,\r\n",
+					"                                prepayment_penalty_mortgage_flag,\r\n",
+					"                                amortization_type,\r\n",
+					"                                property_state,\r\n",
+					"                                property_type,\r\n",
+					"                                postal_code,\r\n",
+					"                                loan_sequence_number,\r\n",
+					"                                loan_purpose,\r\n",
+					"                                original_loan_term,\r\n",
+					"                                number_of_borrowers,\r\n",
+					"                                seller_name,\r\n",
+					"                                servicer_name,\r\n",
+					"                                super_conforming_flag,\r\n",
+					"                                pre_harp_loan_sequence_number,\r\n",
+					"                                program_indicator,\r\n",
+					"                                harp_indicator,\r\n",
+					"                                property_valuation_method,\r\n",
+					"                                interest_only_indicator)) as row_hash\r\n",
+					"FROM loans;\r\n",
+					"\r\n",
+					"SELECT *\r\n",
+					"FROM loans_enriched\r\n",
+					"LIMIT 100;"
+				],
+				"execution_count": 15
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"### Write to Delta Lake\r\n",
+					"Write the data to the silver layer, data in this layer is stored using delta lake. \r\n",
+					"\r\n",
+					"The load is performed using a merge statement, this allows us to reload the same data and update it if necessary.\r\n",
+					"\r\n",
+					"After loading we will inspect the delta lake table to review results"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"CREATE TABLE IF NOT EXISTS delta_loans\r\n",
+					"(\r\n",
+					"    credit_score Integer, \r\n",
+					"    first_payment_date Date, \r\n",
+					"    first_time_homebuyer_flag String, \r\n",
+					"    maturity_date Date, \r\n",
+					"    metropolitan_statistical_area Integer, \r\n",
+					"    mortgage_insurance_percentage Integer, \r\n",
+					"    number_of_units Integer, \r\n",
+					"    occupancy_status String, \r\n",
+					"    original_combined_loan_to_value Integer, \r\n",
+					"    original_debt_to_income_ratio Integer, \r\n",
+					"    original_upb Long, \r\n",
+					"    original_loan_to_value Integer, \r\n",
+					"    original_interest_rate Decimal(6,3), \r\n",
+					"    channel String, \r\n",
+					"    prepayment_penalty_mortgage_flag String, \r\n",
+					"    amortization_type String, \r\n",
+					"    property_state String, \r\n",
+					"    property_type String, \r\n",
+					"    postal_code String, \r\n",
+					"    loan_sequence_number String, \r\n",
+					"    loan_purpose String, \r\n",
+					"    original_loan_term Integer, \r\n",
+					"    number_of_borrowers Integer, \r\n",
+					"    seller_name String, \r\n",
+					"    servicer_name String, \r\n",
+					"    super_conforming_flag String, \r\n",
+					"    pre_harp_loan_sequence_number String, \r\n",
+					"    program_indicator String, \r\n",
+					"    harp_indicator String, \r\n",
+					"    property_valuation_method Integer, \r\n",
+					"    interest_only_indicator String,\r\n",
+					"    processed_date Date, \r\n",
+					"    source_file String, \r\n",
+					"    row_hash Long\r\n",
+					")\r\n",
+					"USING DELTA\r\n",
+					"OPTIONS (\r\n",
+					"    PATH = \"abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan_SQL\"\r\n",
+					");"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"MERGE INTO delta_loans as target\r\n",
+					"USING loans_enriched as source\r\n",
+					"    ON target.loan_sequence_number = source.loan_sequence_number\r\n",
+					"WHEN MATCHED AND target.row_hash != source.row_hash\r\n",
+					"    THEN UPDATE SET *\r\n",
+					"WHEN NOT MATCHED \r\n",
+					"    THEN INSERT *;"
+				],
+				"execution_count": 21
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"SELECT *\r\n",
+					"FROM delta_loans\r\n",
+					"LIMIT 100"
+				],
+				"execution_count": 22
+			}
+		]
+	}
+}
