@@ -1,5 +1,5 @@
 {
-	"name": "Remove 2022 data",
+	"name": "Remove 2022 Data",
 	"properties": {
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -13,7 +13,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "c908f410-5902-41bd-b509-092b7044dd2f"
+				"spark.autotune.trackingId": "d43fea19-d4f8-43cf-b3b2-07767451e1de"
 			}
 		},
 		"metadata": {
