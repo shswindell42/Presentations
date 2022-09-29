@@ -1,0 +1,45 @@
+{
+	"name": "Remove 2022 data",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "c908f410-5902-41bd-b509-092b7044dd2f"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "python"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"from delta import DeltaTable\r\n",
+					"\r\n",
+					"loans = DeltaTable.forPath(spark, \"abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan\")\r\n",
+					"loans.delete(condition=\"first_payment_date >= '2022-01-01'\")\r\n",
+					""
+				],
+				"execution_count": null
+			}
+		]
+	}
+}
