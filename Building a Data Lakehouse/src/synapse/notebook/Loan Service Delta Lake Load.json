@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "e19c07de-e5d3-4551-ad70-662095c7cc68"
+				"spark.autotune.trackingId": "3be75c13-7e85-4cad-a86b-de32089694af"
 			}
 		},
 		"metadata": {
@@ -50,6 +50,11 @@
 		"cells": [
 			{
 				"cell_type": "code",
+				"metadata": {
+					"tags": [
+						"parameters"
+					]
+				},
 				"source": [
 					"loan_path = \"abfss://data@sbilakehousestorage.dfs.core.windows.net/bronze/freddiemac/performance/year=2021/\""
 				],

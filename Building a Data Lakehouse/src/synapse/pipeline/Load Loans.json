@@ -1,0 +1,85 @@
+{
+	"name": "Load Loans",
+	"properties": {
+		"activities": [
+			{
+				"name": "Merge Loans to Silver Layer",
+				"type": "SynapseNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "Loan Delta Lake Load",
+						"type": "NotebookReference"
+					},
+					"parameters": {
+						"loan_path": {
+							"value": {
+								"value": "abfss://data@sbilakehousestorage.dfs.core.windows.net/bronze/freddiemac/loan/year=@{pipeline().parameters.year}",
+								"type": "Expression"
+							},
+							"type": "string"
+						}
+					},
+					"snapshot": true,
+					"sparkPool": {
+						"referenceName": "sbisparkdemo",
+						"type": "BigDataPoolReference"
+					},
+					"executorSize": null,
+					"driverSize": null
+				}
+			},
+			{
+				"name": "Merge Loan Performance to Silver Layer",
+				"type": "SynapseNotebook",
+				"dependsOn": [
+					{
+						"activity": "Merge Loans to Silver Layer",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebook": {
+						"referenceName": "Loan Service Delta Lake Load",
+						"type": "NotebookReference"
+					},
+					"parameters": {
+						"loan_path": {
+							"value": {
+								"value": "abfss://data@sbilakehousestorage.dfs.core.windows.net/bronze/freddiemac/performance/year=@{pipeline().parameters.year}",
+								"type": "Expression"
+							},
+							"type": "string"
+						}
+					},
+					"snapshot": true
+				}
+			}
+		],
+		"parameters": {
+			"year": {
+				"type": "string",
+				"defaultValue": "2019"
+			}
+		},
+		"annotations": []
+	}
+}
