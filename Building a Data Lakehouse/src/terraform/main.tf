@@ -94,6 +94,12 @@ resource "azurerm_synapse_workspace" "main" {
     root_folder = "/Building a Data Lakehouse/src/synapse"
   }
 
+  lifecycle {
+    ignore_changes = [
+      github_repo[0].last_commit_id
+    ]
+  }
+
   tags = local.tags
 }
 
@@ -118,6 +124,12 @@ resource "azurerm_synapse_role_assignment" "example" {
   depends_on = [
     azurerm_synapse_firewall_rule.all_access
   ]
+}
+
+resource "azurerm_role_assignment" "synapse_data_lake_access" {
+  scope = azurerm_storage_account.data_lake.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id = azurerm_synapse_workspace.main.identity[0].principal_id
 }
 
 resource "azurerm_synapse_spark_pool" "spark" {
