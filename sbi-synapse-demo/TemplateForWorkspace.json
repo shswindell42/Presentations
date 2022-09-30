@@ -13,6 +13,543 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('workspaceName'), '/Load Loans')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Merge Loans to Silver Layer",
+						"type": "SynapseNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "Loan Delta Lake Load",
+								"type": "NotebookReference"
+							},
+							"parameters": {
+								"loan_path": {
+									"value": {
+										"value": "abfss://data@sbilakehousestorage.dfs.core.windows.net/bronze/freddiemac/loan/year=@{pipeline().parameters.year}",
+										"type": "Expression"
+									},
+									"type": "string"
+								}
+							},
+							"snapshot": true,
+							"sparkPool": {
+								"referenceName": "sbisparkdemo",
+								"type": "BigDataPoolReference"
+							},
+							"executorSize": null,
+							"conf": {
+								"spark.dynamicAllocation.enabled": null,
+								"spark.dynamicAllocation.minExecutors": null,
+								"spark.dynamicAllocation.maxExecutors": null
+							},
+							"driverSize": null,
+							"numExecutors": null
+						}
+					},
+					{
+						"name": "Merge Loan Performance to Silver Layer",
+						"type": "SynapseNotebook",
+						"dependsOn": [
+							{
+								"activity": "Merge Loans to Silver Layer",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "Loan Service Delta Lake Load",
+								"type": "NotebookReference"
+							},
+							"parameters": {
+								"loan_path": {
+									"value": {
+										"value": "abfss://data@sbilakehousestorage.dfs.core.windows.net/bronze/freddiemac/performance/year=@{pipeline().parameters.year}",
+										"type": "Expression"
+									},
+									"type": "string"
+								}
+							},
+							"snapshot": true,
+							"conf": {
+								"spark.dynamicAllocation.enabled": null,
+								"spark.dynamicAllocation.minExecutors": null,
+								"spark.dynamicAllocation.maxExecutors": null
+							},
+							"numExecutors": null
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"year": {
+						"type": "string",
+						"defaultValue": "2019"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/notebooks/Loan Delta Lake Load')]",
+				"[concat(variables('workspaceId'), '/bigDataPools/sbisparkdemo')]",
+				"[concat(variables('workspaceId'), '/notebooks/Loan Service Delta Lake Load')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Aggregate Queries')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "select top 100 *\nfrom loans\n\nselect count(*)\nfrom loans\n\nselect first_payment_date, count(*)\nfrom loans\ngroup by first_payment_date\norder by first_payment_date\n\n\nselect LEFT(loan_sequence_number, 5) as origination_quarter\n\t,case when credit_score >= 800 THEN '1 Exceptional'\n\t\twhen credit_score between 740 and 799 then '2 Very Good'\n\t\twhen credit_score between 670 and 739 then '3 Good'\n\t\twhen credit_score between 580 and 669 then '4 Fair'\n\t\twhen credit_score <= 579 then '5 Poor'\n\t\tend as credit_range\n\t,AVG(original_interest_rate) as average_interest_rate\n\t,count(*) as number_loans\nfrom loans\ngroup by case when credit_score >= 800 THEN '1 Exceptional'\n\t\twhen credit_score between 740 and 799 then '2 Very Good'\n\t\twhen credit_score between 670 and 739 then '3 Good'\n\t\twhen credit_score between 580 and 669 then '4 Fair'\n\t\twhen credit_score <= 579 then '5 Poor'\n\t\tend\n\t,LEFT(loan_sequence_number, 5)\norder by origination_quarter\n\t,credit_range\n\n-- percentage of delinquent loans\nselect LEFT(l.loan_sequence_number, 5) as origination_quarter\n\t,case when credit_score >= 800 THEN '1 Exceptional'\n\t\twhen credit_score between 740 and 799 then '2 Very Good'\n\t\twhen credit_score between 670 and 739 then '3 Good'\n\t\twhen credit_score between 580 and 669 then '4 Fair'\n\t\twhen credit_score <= 579 then '5 Poor'\n\t\tend as credit_range\n\t,sum(case when lp.current_loan_delinquency_status in ('XX', '0', '   ') then 0 else 1 end) as number_delinquent_loans\n\t,count(distinct l.loan_sequence_number) as number_loans\n\t,sum(case when lp.current_loan_delinquency_status in ('XX', '0', '   ') then 0 else 1 end) / count(distinct l.loan_sequence_number) as percentage_delinquent_loans\nfrom loans l\n\tinner join [dbo].[loan_performance] lp\n\t\ton l.loan_sequence_number = lp.loan_sequence_number\ngroup by case when credit_score >= 800 THEN '1 Exceptional'\n\t\twhen credit_score between 740 and 799 then '2 Very Good'\n\t\twhen credit_score between 670 and 739 then '3 Good'\n\t\twhen credit_score between 580 and 669 then '4 Fair'\n\t\twhen credit_score <= 579 then '5 Poor'\n\t\tend\n\t,LEFT(l.loan_sequence_number, 5)\norder by origination_quarter\n\t,credit_range",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "FreddieMac",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Create FreddicMac Database')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "\nCREATE DATABASE FreddieMac\nGO\n\nUSE FreddieMac\nGO\n\nCREATE VIEW loans\nAS\nSELECT *\nFROM OPENROWSET(\n    BULK 'abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan/',\n    FORMAT = 'DELTA'\n) as loans\nGO\n\nCREATE VIEW loan_performance\nAS\nSELECT *\nFROM OPENROWSET(\n    BULK 'abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan_performance/',\n    FORMAT = 'DELTA'\n) as loans\nGO",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "master",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Query Delta Lake Table')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "SELECT *\nFROM OPENROWSET(\n    BULK 'abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan/',\n    FORMAT = 'DELTA'\n) as loans",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "master",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Loan Delta Lake Load SQL Edition')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"description": "Parses loan data from bronze layer, and merges into silver layer",
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "sbisparkdemo",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "b4d71ab0-8847-4d41-a61c-ef4d2b92efad"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "sql"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/07d94183-4c00-462f-adc3-8118aa879dbb/resourceGroups/data-lakehouse-demo/providers/Microsoft.Synapse/workspaces/sbi-synapse-demo/bigDataPools/sbisparkdemo",
+						"name": "sbisparkdemo",
+						"type": "Spark",
+						"endpoint": "https://sbi-synapse-demo.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sbisparkdemo",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.2",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"# Process Loan Origination File\r\n",
+							"Reads a directory of loan origination files from the bronze layer, adds metadata, and merges it into the silver layer. This demonstrates schema-on-read and managing data using delta lake."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"collapsed": false
+						},
+						"source": [
+							"SELECT *\r\n",
+							"FROM text.`abfss://data@sbilakehousestorage.dfs.core.windows.net/bronze/freddiemac/loan/year=2021`\r\n",
+							"LIMIT 10"
+						],
+						"outputs": [],
+						"execution_count": 25
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"### Schema on Read\r\n",
+							"We create a temporary view which defines a schema for the dataset. We read the data as a CSV using | for the separator, yyyyMM for the date format, and without headers. "
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"DROP VIEW IF EXISTS loans;\r\n",
+							"\r\n",
+							"CREATE TEMPORARY VIEW loans\r\n",
+							"(\r\n",
+							"    credit_score Integer, \r\n",
+							"    first_payment_date Date, \r\n",
+							"    first_time_homebuyer_flag String, \r\n",
+							"    maturity_date Date, \r\n",
+							"    metropolitan_statistical_area Integer, \r\n",
+							"    mortgage_insurance_percentage Integer, \r\n",
+							"    number_of_units Integer, \r\n",
+							"    occupancy_status String, \r\n",
+							"    original_combined_loan_to_value Integer, \r\n",
+							"    original_debt_to_income_ratio Integer, \r\n",
+							"    original_upb Long, \r\n",
+							"    original_loan_to_value Integer, \r\n",
+							"    original_interest_rate Decimal(6,3), \r\n",
+							"    channel String, \r\n",
+							"    prepayment_penalty_mortgage_flag String, \r\n",
+							"    amortization_type String, \r\n",
+							"    property_state String, \r\n",
+							"    property_type String, \r\n",
+							"    postal_code String, \r\n",
+							"    loan_sequence_number String, \r\n",
+							"    loan_purpose String, \r\n",
+							"    original_loan_term Integer, \r\n",
+							"    number_of_borrowers Integer, \r\n",
+							"    seller_name String, \r\n",
+							"    servicer_name String, \r\n",
+							"    super_conforming_flag String, \r\n",
+							"    pre_harp_loan_sequence_number String, \r\n",
+							"    program_indicator String, \r\n",
+							"    harp_indicator String, \r\n",
+							"    property_valuation_method Integer, \r\n",
+							"    interest_only_indicator String\r\n",
+							")\r\n",
+							"USING CSV\r\n",
+							"OPTIONS (\r\n",
+							"    path \"abfss://data@sbilakehousestorage.dfs.core.windows.net/bronze/freddiemac/loan/year=2021\"\r\n",
+							"    ,header \"false\"\r\n",
+							"    ,sep \"|\"\r\n",
+							"    ,dateFormat \"yyyyMM\"\r\n",
+							");\r\n",
+							"\r\n",
+							"SELECT *\r\n",
+							"FROM loans\r\n",
+							"LIMIT 100;"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"Add metadata columns for:\r\n",
+							"- The file we read the data from\r\n",
+							"- When we read the data\r\n",
+							"- row hash\r\n",
+							"\r\n",
+							"This is done via creating a new view for the data, no need to physically read the data into a table"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"DROP VIEW IF EXISTS loans_enriched;\r\n",
+							"\r\n",
+							"CREATE TEMPORARY VIEW loans_enriched\r\n",
+							"AS\r\n",
+							"SELECT *\r\n",
+							"    ,current_date as processed_date\r\n",
+							"    ,input_file_name() as source_file\r\n",
+							"    ,xxhash64(concat_ws('|', credit_score,\r\n",
+							"                                first_payment_date,\r\n",
+							"                                first_time_homebuyer_flag,\r\n",
+							"                                maturity_date,\r\n",
+							"                                metropolitan_statistical_area,\r\n",
+							"                                mortgage_insurance_percentage,\r\n",
+							"                                number_of_units,\r\n",
+							"                                occupancy_status,\r\n",
+							"                                original_combined_loan_to_value,\r\n",
+							"                                original_debt_to_income_ratio,\r\n",
+							"                                original_upb,\r\n",
+							"                                original_loan_to_value,\r\n",
+							"                                original_interest_rate,\r\n",
+							"                                channel,\r\n",
+							"                                prepayment_penalty_mortgage_flag,\r\n",
+							"                                amortization_type,\r\n",
+							"                                property_state,\r\n",
+							"                                property_type,\r\n",
+							"                                postal_code,\r\n",
+							"                                loan_sequence_number,\r\n",
+							"                                loan_purpose,\r\n",
+							"                                original_loan_term,\r\n",
+							"                                number_of_borrowers,\r\n",
+							"                                seller_name,\r\n",
+							"                                servicer_name,\r\n",
+							"                                super_conforming_flag,\r\n",
+							"                                pre_harp_loan_sequence_number,\r\n",
+							"                                program_indicator,\r\n",
+							"                                harp_indicator,\r\n",
+							"                                property_valuation_method,\r\n",
+							"                                interest_only_indicator)) as row_hash\r\n",
+							"FROM loans;\r\n",
+							"\r\n",
+							"SELECT *\r\n",
+							"FROM loans_enriched\r\n",
+							"LIMIT 100;"
+						],
+						"outputs": [],
+						"execution_count": 15
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"### Write to Delta Lake\r\n",
+							"Write the data to the silver layer, data in this layer is stored using delta lake. \r\n",
+							"\r\n",
+							"The load is performed using a merge statement, this allows us to reload the same data and update it if necessary.\r\n",
+							"\r\n",
+							"After loading we will inspect the delta lake table to review results"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"CREATE TABLE IF NOT EXISTS delta_loans\r\n",
+							"(\r\n",
+							"    credit_score Integer, \r\n",
+							"    first_payment_date Date, \r\n",
+							"    first_time_homebuyer_flag String, \r\n",
+							"    maturity_date Date, \r\n",
+							"    metropolitan_statistical_area Integer, \r\n",
+							"    mortgage_insurance_percentage Integer, \r\n",
+							"    number_of_units Integer, \r\n",
+							"    occupancy_status String, \r\n",
+							"    original_combined_loan_to_value Integer, \r\n",
+							"    original_debt_to_income_ratio Integer, \r\n",
+							"    original_upb Long, \r\n",
+							"    original_loan_to_value Integer, \r\n",
+							"    original_interest_rate Decimal(6,3), \r\n",
+							"    channel String, \r\n",
+							"    prepayment_penalty_mortgage_flag String, \r\n",
+							"    amortization_type String, \r\n",
+							"    property_state String, \r\n",
+							"    property_type String, \r\n",
+							"    postal_code String, \r\n",
+							"    loan_sequence_number String, \r\n",
+							"    loan_purpose String, \r\n",
+							"    original_loan_term Integer, \r\n",
+							"    number_of_borrowers Integer, \r\n",
+							"    seller_name String, \r\n",
+							"    servicer_name String, \r\n",
+							"    super_conforming_flag String, \r\n",
+							"    pre_harp_loan_sequence_number String, \r\n",
+							"    program_indicator String, \r\n",
+							"    harp_indicator String, \r\n",
+							"    property_valuation_method Integer, \r\n",
+							"    interest_only_indicator String,\r\n",
+							"    processed_date Date, \r\n",
+							"    source_file String, \r\n",
+							"    row_hash Long\r\n",
+							")\r\n",
+							"USING DELTA\r\n",
+							"OPTIONS (\r\n",
+							"    PATH = \"abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan_SQL\"\r\n",
+							");"
+						],
+						"outputs": [],
+						"execution_count": 18
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"MERGE INTO delta_loans as target\r\n",
+							"USING loans_enriched as source\r\n",
+							"    ON target.loan_sequence_number = source.loan_sequence_number\r\n",
+							"WHEN MATCHED AND target.row_hash != source.row_hash\r\n",
+							"    THEN UPDATE SET *\r\n",
+							"WHEN NOT MATCHED \r\n",
+							"    THEN INSERT *;"
+						],
+						"outputs": [],
+						"execution_count": 21
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"SELECT *\r\n",
+							"FROM delta_loans\r\n",
+							"LIMIT 100"
+						],
+						"outputs": [],
+						"execution_count": 22
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Loan Delta Lake Load')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
@@ -34,7 +571,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "41c2b3f9-33c0-435c-a45c-d9ca8d4538c3"
+						"spark.autotune.trackingId": "19ae8543-13dc-44e5-bb8b-7ba43f002ccd"
 					}
 				},
 				"metadata": {
@@ -59,8 +596,7 @@
 						"sparkVersion": "3.2",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -76,7 +612,10 @@
 								"transient": {
 									"deleting": false
 								}
-							}
+							},
+							"tags": [
+								"parameters"
+							]
 						},
 						"source": [
 							"loan_path = \"abfss://data@sbilakehousestorage.dfs.core.windows.net/bronze/freddiemac/loan/year=2021\""
@@ -340,31 +879,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/sbisparkdemo')]",
-			"type": "Microsoft.Synapse/workspaces/bigDataPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"autoPause": {
-					"enabled": true,
-					"delayInMinutes": 15
-				},
-				"autoScale": {
-					"enabled": true,
-					"maxNodeCount": 10,
-					"minNodeCount": 3
-				},
-				"nodeCount": 0,
-				"nodeSize": "Small",
-				"nodeSizeFamily": "MemoryOptimized",
-				"sparkVersion": "3.2",
-				"isComputeIsolationEnabled": false,
-				"sessionLevelPackagesEnabled": false,
-				"annotations": []
-			},
-			"dependsOn": [],
-			"location": "eastus2"
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/Loan Service Delta Lake Load')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
@@ -385,7 +899,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "455be1ac-dbd5-4cfd-a373-e4c30ffb179a"
+						"spark.autotune.trackingId": "3be75c13-7e85-4cad-a86b-de32089694af"
 					}
 				},
 				"metadata": {
@@ -410,15 +924,18 @@
 						"sparkVersion": "3.2",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
+						"metadata": {
+							"tags": [
+								"parameters"
+							]
+						},
 						"source": [
 							"loan_path = \"abfss://data@sbilakehousestorage.dfs.core.windows.net/bronze/freddiemac/performance/year=2021/\""
 						],
@@ -591,64 +1108,226 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Query Delta Lake Table')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"name": "[concat(parameters('workspaceName'), '/Remove 2022 Data')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"content": {
-					"query": "SELECT *\nFROM OPENROWSET(\n    BULK 'abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan/',\n    FORMAT = 'DELTA'\n) as loans",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "master",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "d43fea19-d4f8-43cf-b3b2-07767451e1de"
+					}
 				},
-				"type": "SqlQuery"
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"from delta import DeltaTable\r\n",
+							"\r\n",
+							"loans = DeltaTable.forPath(spark, \"abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan\")\r\n",
+							"loans.delete(condition=\"first_payment_date >= '2022-01-01'\")\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
 			},
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Create FreddicMac Database')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"name": "[concat(parameters('workspaceName'), '/Write Aggregate to Gold')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"content": {
-					"query": "\nCREATE DATABASE FreddieMac\nGO\n\nUSE FreddieMac\nGO\n\nCREATE VIEW loans\nAS\nSELECT *\nFROM OPENROWSET(\n    BULK 'abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan/',\n    FORMAT = 'DELTA'\n) as loans\nGO\n\nCREATE VIEW loan_performance\nAS\nSELECT *\nFROM OPENROWSET(\n    BULK 'abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan_performance/',\n    FORMAT = 'DELTA'\n) as loans\nGO",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "FreddieMac",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "sbisparkdemo",
+					"type": "BigDataPoolReference"
 				},
-				"type": "SqlQuery"
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "77297a09-1c6b-4b26-aeb9-89dfb1047c31"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/07d94183-4c00-462f-adc3-8118aa879dbb/resourceGroups/data-lakehouse-demo/providers/Microsoft.Synapse/workspaces/sbi-synapse-demo/bigDataPools/sbisparkdemo",
+						"name": "sbisparkdemo",
+						"type": "Spark",
+						"endpoint": "https://sbi-synapse-demo.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sbisparkdemo",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.2",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"loan_df = spark.read.load(path=\"abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan\", format=\"delta\")\r\n",
+							"loan_performance_df = spark.read.load(path=\"abfss://data@sbilakehousestorage.dfs.core.windows.net/silver/freddiemac/loan_performance\", format=\"delta\")"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"loan_df.createOrReplaceTempView(\"loan\")\r\n",
+							"loan_performance_df.createOrReplaceTempView(\"loan_performance\")"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"agg_data = spark.sql(\"\"\"\r\n",
+							"select LEFT(l.loan_sequence_number, 5) as origination_quarter\r\n",
+							"\t,case when credit_score >= 800 THEN '1 Exceptional'\r\n",
+							"\t\twhen credit_score between 740 and 799 then '2 Very Good'\r\n",
+							"\t\twhen credit_score between 670 and 739 then '3 Good'\r\n",
+							"\t\twhen credit_score between 580 and 669 then '4 Fair'\r\n",
+							"\t\twhen credit_score <= 579 then '5 Poor'\r\n",
+							"\t\tend as credit_range\r\n",
+							"\t,sum(case when lp.current_loan_delinquency_status in ('XX', '0', '   ') then 0 else 1 end) as number_delinquent_loans\r\n",
+							"\t,count(distinct l.loan_sequence_number) as number_loans\r\n",
+							"\t,sum(case when lp.current_loan_delinquency_status in ('XX', '0', '   ') then 0 else 1 end) / count(distinct l.loan_sequence_number) as percentage_delinquent_loans\r\n",
+							"from loan l\r\n",
+							"\tinner join loan_performance lp\r\n",
+							"\t\ton l.loan_sequence_number = lp.loan_sequence_number\r\n",
+							"group by case when credit_score >= 800 THEN '1 Exceptional'\r\n",
+							"\t\twhen credit_score between 740 and 799 then '2 Very Good'\r\n",
+							"\t\twhen credit_score between 670 and 739 then '3 Good'\r\n",
+							"\t\twhen credit_score between 580 and 669 then '4 Fair'\r\n",
+							"\t\twhen credit_score <= 579 then '5 Poor'\r\n",
+							"\t\tend\r\n",
+							"\t,LEFT(l.loan_sequence_number, 5)\r\n",
+							"order by origination_quarter\r\n",
+							"\t,credit_range\r\n",
+							"\"\"\")\r\n",
+							"\r\n",
+							"display(agg_data)"
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"agg_data.write.mode(\"overwrite\").parquet(\"abfss://data@sbilakehousestorage.dfs.core.windows.net/gold/freddiemac/agg/delinquency_by_credit\")"
+						],
+						"outputs": [],
+						"execution_count": 6
+					}
+				]
 			},
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Aggregate Queries')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"name": "[concat(parameters('workspaceName'), '/sbisparkdemo')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
-				"content": {
-					"query": "select LEFT(loan_sequence_number, 5) as origination_quarter\n\t,case when credit_score >= 800 THEN '1 Exceptional'\n\t\twhen credit_score between 740 and 799 then '2 Very Good'\n\t\twhen credit_score between 670 and 739 then '3 Good'\n\t\twhen credit_score between 580 and 669 then '4 Fair'\n\t\twhen credit_score <= 579 then '5 Poor'\n\t\tend as credit_range\n\t,AVG(original_interest_rate) as average_interest_rate\n\t,count(*) as number_loans\nfrom loans\ngroup by case when credit_score >= 800 THEN '1 Exceptional'\n\t\twhen credit_score between 740 and 799 then '2 Very Good'\n\t\twhen credit_score between 670 and 739 then '3 Good'\n\t\twhen credit_score between 580 and 669 then '4 Fair'\n\t\twhen credit_score <= 579 then '5 Poor'\n\t\tend\n\t,LEFT(loan_sequence_number, 5)\norder by origination_quarter\n\t,credit_range\n\n-- percentage of delinquent loans\nselect LEFT(l.loan_sequence_number, 5) as origination_quarter\n\t,case when credit_score >= 800 THEN '1 Exceptional'\n\t\twhen credit_score between 740 and 799 then '2 Very Good'\n\t\twhen credit_score between 670 and 739 then '3 Good'\n\t\twhen credit_score between 580 and 669 then '4 Fair'\n\t\twhen credit_score <= 579 then '5 Poor'\n\t\tend as credit_range\n\t,sum(case when lp.current_loan_delinquency_status in ('XX', '0', '   ') then 0 else 1 end) as number_delinquent_loans\n\t,count(distinct l.loan_sequence_number) as number_loans\n\t,sum(case when lp.current_loan_delinquency_status in ('XX', '0', '   ') then 0 else 1 end) / count(distinct l.loan_sequence_number) as percentage_delinquent_loans\nfrom loans l\n\tinner join [dbo].[loan_performance] lp\n\t\ton l.loan_sequence_number = lp.loan_sequence_number\ngroup by case when credit_score >= 800 THEN '1 Exceptional'\n\t\twhen credit_score between 740 and 799 then '2 Very Good'\n\t\twhen credit_score between 670 and 739 then '3 Good'\n\t\twhen credit_score between 580 and 669 then '4 Fair'\n\t\twhen credit_score <= 579 then '5 Poor'\n\t\tend\n\t,LEFT(l.loan_sequence_number, 5)\norder by origination_quarter\n\t,credit_range",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "master",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
+				"autoPause": {
+					"enabled": true,
+					"delayInMinutes": 15
 				},
-				"type": "SqlQuery"
+				"autoScale": {
+					"enabled": true,
+					"maxNodeCount": 10,
+					"minNodeCount": 3
+				},
+				"nodeCount": 0,
+				"nodeSize": "Small",
+				"nodeSizeFamily": "MemoryOptimized",
+				"sparkVersion": "3.2",
+				"isComputeIsolationEnabled": false,
+				"sessionLevelPackagesEnabled": false,
+				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [],
+			"location": "eastus2"
 		}
 	]
 }
